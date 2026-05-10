@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Mirrored from Figma variables — populated by the MCP sync flow. */
+    --color-primary: 16 100% 50%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-secondary: 210 40% 96%;
+    --color-secondary-foreground: 222 47% 11%;
+    --color-accent: 210 40% 96%;
+    --color-accent-foreground: 222 47% 11%;
+    --color-destructive: 0 84% 60%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-background: 0 0% 100%;
+    --color-foreground: 222 47% 11%;
+    --color-muted: 210 40% 96%;
+    --color-muted-foreground: 215 16% 47%;
+    --color-border: 214 32% 91%;
+    --color-input: 214 32% 91%;
+    --color-ring: 222 84% 5%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --color-primary: 16 100% 60%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-secondary: 217 33% 17%;
+    --color-secondary-foreground: 0 0% 100%;
+    --color-accent: 217 33% 17%;
+    --color-accent-foreground: 0 0% 100%;
+    --color-destructive: 0 63% 31%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-background: 222 47% 11%;
+    --color-foreground: 0 0% 100%;
+    --color-muted: 217 33% 17%;
+    --color-muted-foreground: 215 20% 65%;
+    --color-border: 217 33% 17%;
+    --color-input: 217 33% 17%;
+    --color-ring: 213 27% 84%;
+  }
+
+  * {
+    border-color: hsl(var(--color-border));
+  }
+
+  body {
+    background-color: hsl(var(--color-background));
+    color: hsl(var(--color-foreground));
+  }
+}

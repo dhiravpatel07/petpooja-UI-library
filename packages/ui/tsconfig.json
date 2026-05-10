@@ -1,0 +1,12 @@
+{
+  "extends": "@petpooja/typescript-config/react-library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["src", "tests", "vite.config.ts", "tailwind.config.ts", "tailwind.preset.ts"],
+  "exclude": ["node_modules", "dist"]
+}
