@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"../../../packages/ui/dist/index.js -> react-day-picker\":{\"id\":\"../../../packages/ui/dist/index.js -> react-day-picker\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_pnpm_react-day-picker_9_14_0_react_18_3_1_node_modules_react--8249df.js\"]}}"
