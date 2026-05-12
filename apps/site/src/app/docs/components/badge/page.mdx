@@ -1,0 +1,141 @@
+import { Badge } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+
+# Badge
+
+A small status indicator. Two sizes:
+
+- **Large** — a coloured pill containing a short label (e.g. "New").
+- **Small** — an 8×8 dot.
+
+Pixel-perfect port of Figma node `50:155` from the Pantheon design file.
+
+## Installation
+
+<InstallCommand name="badge" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { Badge } from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <div className="flex items-center gap-3">
+      <Badge size="small" />
+      <Badge size="large">New</Badge>
+    </div>
+  );
+}
+```
+
+## Preview
+
+The Figma frame (node `50:155`): a Small dot beside a Large "New" pill.
+
+<ComponentPreview
+  preview={
+    <div className="flex items-center gap-10">
+      <Badge size="small" />
+      <Badge size="large">New</Badge>
+    </div>
+  }
+  code={`<div className="flex items-center gap-10">
+  <Badge size="small" />
+  <Badge size="large">New</Badge>
+</div>`}
+/>
+
+## API
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'large' | 'small'",
+      default: "'large'",
+      description: (
+        <>
+          Visual variant. <code>large</code> shows children as text inside a coloured pill.{' '}
+          <code>small</code> renders an 8×8 dot — children are ignored.
+        </>
+      ),
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: (
+        <>
+          Additional classes, merged with the base styles via <code>tailwind-merge</code>.
+        </>
+      ),
+    },
+    {
+      name: 'children',
+      type: 'ReactNode',
+      description: <>Label text shown in the Large variant. Ignored when <code>size="small"</code>.</>,
+    },
+  ]}
+/>
+
+The component also accepts every standard `<span>` prop (forwarded to the underlying element).
+
+## Design tokens
+
+Every spec below comes directly from Figma node `50:155`.
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Background',
+      value: '#7e00d2',
+      figmaName: 'notch/accent-purple',
+      visual: <div className="h-9 w-9 rounded-md bg-[#7e00d2]" />,
+    },
+    {
+      label: 'Radius',
+      value: '5px',
+      visual: (
+        <div className="h-9 w-9 rounded-[5px] border-2 border-foreground/30 bg-background" />
+      ),
+    },
+    {
+      label: 'Padding (Large)',
+      value: '8px horizontal',
+      visual: (
+        <div className="flex items-center justify-center gap-0.5">
+          <span className="h-5 w-1 rounded-sm bg-[#7e00d2]/40" />
+          <Badge size="large">x</Badge>
+          <span className="h-5 w-1 rounded-sm bg-[#7e00d2]/40" />
+        </div>
+      ),
+    },
+    {
+      label: 'Font (Large)',
+      value: 'Inter Medium 10 / 18',
+      visual: (
+        <span className="font-medium leading-[18px] text-foreground" style={{ fontSize: 18 }}>
+          Aa
+        </span>
+      ),
+    },
+    {
+      label: 'Text colour',
+      value: 'white',
+      visual: <div className="h-9 w-9 rounded-md bg-white ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Dot size (Small)',
+      value: '8 × 8 px',
+      visual: <Badge size="small" />,
+    },
+  ]}
+/>

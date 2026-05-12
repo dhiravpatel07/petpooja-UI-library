@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "title": "Radio Group",
+  "description": "Single-select group of radio buttons. Selected × Enabled / Disabled variants. Built on Radix RadioGroup so ARIA roles, focus, arrow-key navigation, and form integration are handled. Pixel-perfect port of Figma node 2381:1299 (Pantheon › Radio Buttons).",
+  "dependencies": [
+    "@radix-ui/react-radio-group"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/radio-group.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport * as RadioGroupPrimitive from '@radix-ui/react-radio-group';\nimport { cn } from '@/lib/utils';\n\n// Pixel-perfect port of Figma node 2381:1299 (Pantheon › Radio Buttons).\n//\n// Figma frame is 24×24 (the Material Design icon canvas). The visible\n// circle is inset 10.42% on each side → 19×19 px, centered. That\n// structure is preserved here: the Radix Item is the 24×24 hit area,\n// and an inner <span> renders the 19×19 visible circle with the actual\n// border and selected-state indicator.\n//\n// Four documented states: Selected × Disabled — driven via Radix\n// RadioGroup so ARIA roles, focus, keyboard arrows, and form\n// integration are handled for us.\n\nconst RadioGroup = React.forwardRef<\n  React.ElementRef<typeof RadioGroupPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>\n>(({ className, ...props }, ref) => (\n  <RadioGroupPrimitive.Root\n    ref={ref}\n    className={cn('flex flex-col gap-2', className)}\n    {...props}\n  />\n));\nRadioGroup.displayName = 'RadioGroup';\n\nconst RadioGroupItem = React.forwardRef<\n  React.ElementRef<typeof RadioGroupPrimitive.Item>,\n  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>\n>(({ className, ...props }, ref) => (\n  <RadioGroupPrimitive.Item\n    ref={ref}\n    className={cn(\n      // 24×24 hit area — matches the Figma frame size exactly.\n      'peer group/radio inline-flex h-6 w-6 shrink-0 items-center justify-center outline-none disabled:cursor-not-allowed',\n      className,\n    )}\n    {...props}\n  >\n    <span\n      aria-hidden=\"true\"\n      className={cn(\n        // 19×19 visible circle centered in the 24×24 hit area\n        'flex h-[19px] w-[19px] items-center justify-center rounded-full border-2 border-black bg-white transition-colors',\n        // Selected — fill the border with primary blue\n        'group-data-[state=checked]/radio:border-[#1770ee]',\n        // Disabled — overrides both unselected (black) and selected (blue) → gray\n        'group-disabled/radio:border-[#cccccc]',\n        // Focus ring on the visible circle (not the surrounding hit area)\n        'group-focus-visible/radio:ring-2 group-focus-visible/radio:ring-ring group-focus-visible/radio:ring-offset-2',\n      )}\n    >\n      <RadioGroupPrimitive.Indicator\n        className={cn(\n          // 9×9 inner dot — only rendered when the item is checked\n          'block h-[9px] w-[9px] rounded-full bg-[#1770ee] transition-colors',\n          // Disabled checked — gray dot to match the gray border\n          'group-disabled/radio:bg-[#cccccc]',\n        )}\n      />\n    </span>\n  </RadioGroupPrimitive.Item>\n));\nRadioGroupItem.displayName = 'RadioGroupItem';\n\nexport { RadioGroup, RadioGroupItem };\n",
+      "type": "registry:ui",
+      "target": "components/ui/radio-group.tsx"
+    }
+  ]
+}

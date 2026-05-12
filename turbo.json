@@ -13,6 +13,12 @@
       "inputs": [
         "src/**",
         "tests/**",
+        "scripts/**",
+        "public/**",
+        "app/**",
+        "mdx-components.*",
+        "next.config.*",
+        "next-env.d.ts",
         "index.html",
         "package.json",
         "tsconfig*.json",
@@ -21,7 +27,7 @@
         "tailwind.preset.*",
         "postcss.config.*"
       ],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
       "cache": false,

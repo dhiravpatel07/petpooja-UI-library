@@ -1,0 +1,307 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  TabsLiveDemo,
+  TabsSizesDemo,
+  TabsTypesDemo,
+} from '@/components/demos/tabs-demo';
+
+# Tabs
+
+Horizontal navigation between panels of related content. Selected tab gets a 1.5px brand underline; hover gets a soft `#fafafa` background.
+
+Built on **Radix Tabs** so ARIA roles (`role="tablist"`, `role="tab"`, `role="tabpanel"`), focus management, and arrow-key navigation come for free. Pixel-perfect port of Figma node `47:626`.
+
+The Figma documents four sizes (`xs / sm / md / lg`) and three compositions (text + icon / text only / icon only) — all handled by **one component**. Size is a prop on `TabsList` that cascades to every trigger; composition is whatever you pass as children.
+
+## Installation
+
+<InstallCommand name="tabs" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Live demo
+
+<ComponentPreview
+  previewClassName="!min-h-[260px] !p-8"
+  preview={<TabsLiveDemo />}
+  code={`'use client';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <Tabs defaultValue="sales">
+      <TabsList size="md">
+        <TabsTrigger value="sales">
+          <RavenIcon />
+          Sales
+        </TabsTrigger>
+        <TabsTrigger value="analytics">
+          <ChartIcon />
+          Analytics
+        </TabsTrigger>
+        <TabsTrigger value="orders">
+          <PackageIcon />
+          Orders
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="sales">Sales panel…</TabsContent>
+      <TabsContent value="analytics">Analytics panel…</TabsContent>
+      <TabsContent value="orders">Orders panel…</TabsContent>
+    </Tabs>
+  );
+}`}
+/>
+
+## Sizes
+
+`size` on `TabsList` controls the height, font size, and icon size for every trigger inside.
+
+<ComponentPreview
+  previewClassName="!min-h-[440px] !p-8"
+  preview={<TabsSizesDemo />}
+  code={`<TabsList size="xs">…</TabsList>
+<TabsList size="sm">…</TabsList>
+<TabsList size="md">…</TabsList>
+<TabsList size="lg">…</TabsList>`}
+/>
+
+## Types
+
+Three compositions from Figma — all from one component, just different children.
+
+<ComponentPreview
+  previewClassName="!min-h-[360px] !p-8"
+  preview={<TabsTypesDemo />}
+  code={`{/* Icon + Text */}
+<TabsTrigger value="sales">
+  <RavenIcon />
+  Sales
+</TabsTrigger>
+
+{/* Text only */}
+<TabsTrigger value="sales">Sales</TabsTrigger>
+
+{/* Icon only — provide aria-label for screen readers */}
+<TabsTrigger value="sales" aria-label="Sales">
+  <RavenIcon />
+</TabsTrigger>`}
+/>
+
+## API
+
+### `Tabs`
+
+Wraps Radix `Tabs.Root` — controls which tab is active.
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      description: <>Controlled active tab value. Pair with <code>onValueChange</code>.</>,
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Initial active tab when uncontrolled.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Fires whenever the user activates a different tab.',
+    },
+    {
+      name: 'orientation',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+      description: 'Used by Radix for arrow-key navigation direction.',
+    },
+    {
+      name: 'activationMode',
+      type: "'automatic' | 'manual'",
+      default: "'automatic'",
+      description: 'Automatic activates the tab on focus; manual requires Space / Enter.',
+    },
+  ]}
+/>
+
+### `TabsList`
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: <>Cascades to every <code>TabsTrigger</code> inside via a <code>data-tabs-size</code> attribute. Sets height, font size, and icon size.</>,
+    },
+  ]}
+/>
+
+### `TabsTrigger`
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      required: true,
+      description: 'The value this tab represents — paired with the matching TabsContent.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Dims the trigger and blocks interaction.',
+    },
+  ]}
+/>
+
+### `TabsContent`
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      required: true,
+      description: 'Matches the corresponding TabsTrigger value. Renders only when that tab is active.',
+    },
+    {
+      name: 'forceMount',
+      type: 'boolean',
+      default: 'false',
+      description: 'Mount even when not active (useful for SEO or animations).',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `47:626`.
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Height — xs',
+      value: '32 px',
+      visual: (
+        <div className="flex h-8 items-center rounded-md bg-zinc-100 px-3 text-[10px] font-semibold text-zinc-600">
+          32
+        </div>
+      ),
+    },
+    {
+      label: 'Height — sm',
+      value: '36 px',
+      visual: (
+        <div className="flex h-9 items-center rounded-md bg-zinc-100 px-3 text-[10px] font-semibold text-zinc-600">
+          36
+        </div>
+      ),
+    },
+    {
+      label: 'Height — md',
+      value: '40 px',
+      visual: (
+        <div className="flex h-10 items-center rounded-md bg-zinc-100 px-3 text-[10px] font-semibold text-zinc-600">
+          40
+        </div>
+      ),
+    },
+    {
+      label: 'Height — lg',
+      value: '48 px',
+      visual: (
+        <div className="flex h-12 items-center rounded-md bg-zinc-100 px-3 text-[10px] font-semibold text-zinc-600">
+          48
+        </div>
+      ),
+    },
+    {
+      label: 'Icon — xs / sm',
+      value: '18 × 18 px',
+      visual: <div className="h-[18px] w-[18px] rounded-sm bg-zinc-300" />,
+    },
+    {
+      label: 'Icon — md',
+      value: '20 × 20 px',
+      visual: <div className="h-5 w-5 rounded-sm bg-zinc-300" />,
+    },
+    {
+      label: 'Icon — lg',
+      value: '24 × 24 px',
+      visual: <div className="h-6 w-6 rounded-sm bg-zinc-300" />,
+    },
+    {
+      label: 'Padding',
+      value: '32 / 8 px',
+      figmaName: 'px-8 py-2',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-md border border-dashed border-[#7e00d2]/40 bg-[#7e00d2]/5 text-[10px] font-medium text-[#7e00d2]">
+          32·8
+        </div>
+      ),
+    },
+    {
+      label: 'Icon ↔ text gap',
+      value: '8 px',
+      visual: (
+        <div className="flex items-center gap-2">
+          <span className="h-4 w-4 rounded-sm bg-zinc-300" />
+          <span className="h-3 w-10 rounded bg-zinc-300" />
+        </div>
+      ),
+    },
+    {
+      label: 'Text — xs / sm / md',
+      value: 'Inter Medium 14 / 22',
+      visual: <span className="text-[14px] font-medium leading-[22px]">Aa</span>,
+    },
+    {
+      label: 'Text — lg',
+      value: 'Inter Medium 16 / 24',
+      visual: <span className="text-[16px] font-medium leading-6">Aa</span>,
+    },
+    {
+      label: 'Text — selected',
+      value: 'Inter Semi-Bold · #1770ee',
+      figmaName: 'text/brand',
+      visual: <span className="text-[14px] font-semibold leading-[22px] text-[#1770ee]">Aa</span>,
+    },
+    {
+      label: 'Text — enabled',
+      value: '#666666',
+      figmaName: 'text/secondary',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-[#666666]">Aa</span>,
+    },
+    {
+      label: 'Hover background',
+      value: '#fafafa',
+      figmaName: 'surface/secondary',
+      visual: <div className="h-9 w-12 rounded-md bg-[#fafafa] ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Underline',
+      value: '1.5 px · #1770ee',
+      visual: (
+        <div className="flex h-8 w-12 flex-col justify-end">
+          <span className="font-medium leading-none text-[#1770ee]">Tab</span>
+          <div className="mt-1 h-[1.5px] w-full bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'List border',
+      value: '1 px · #e5e5e5',
+      figmaName: 'border/primary',
+      visual: <div className="h-9 w-12 border-b border-[#e5e5e5]" />,
+    },
+  ]}
+/>

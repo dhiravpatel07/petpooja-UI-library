@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "title": "Checkbox",
+  "description": "Three-state checkbox (Unselected / Selected / Indeterminate) with Enabled and Disabled variants. Built on Radix Checkbox so the indeterminate state, ARIA, keyboard, and focus management are handled. Pixel-perfect port of Figma node 2331:76 (Pantheon › Checkbox).",
+  "dependencies": [
+    "@radix-ui/react-checkbox"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/checkbox.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport * as CheckboxPrimitive from '@radix-ui/react-checkbox';\nimport { cn } from '@/lib/utils';\n\n// Pixel-perfect port of Figma node 2331:76 (Pantheon › Checkbox).\n//\n// Figma frame is 24×24 (the Material Design icon canvas). The visible box is\n// inset 14.58% on each side → 17×17 px, centered. That structure is preserved\n// here: the Radix Root is the 24×24 hit area, and an inner <span> renders the\n// 17×17 visible box with the actual styling.\n//\n// Three types (Unselected / Selected / Indeterminate) × two states\n// (Enabled / Disabled) — driven via Radix Checkbox so the indeterminate\n// state, ARIA roles, focus, and keyboard activation are handled for us.\n\nconst Checkbox = React.forwardRef<\n  React.ElementRef<typeof CheckboxPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>\n>(({ className, ...props }, ref) => (\n  <CheckboxPrimitive.Root\n    ref={ref}\n    className={cn(\n      // 24×24 hit area — matches the Figma frame size exactly.\n      'peer group/checkbox inline-flex h-6 w-6 shrink-0 items-center justify-center outline-none disabled:cursor-not-allowed',\n      className,\n    )}\n    {...props}\n  >\n    <span\n      aria-hidden=\"true\"\n      className={cn(\n        // 17×17 visible box centered in the 24×24 hit area (Figma inset 14.58%).\n        'flex h-[17px] w-[17px] items-center justify-center rounded-[2px] border-2 border-black bg-white transition-colors',\n        // Selected + Indeterminate — fill with primary blue\n        'group-data-[state=checked]/checkbox:border-[#1770ee] group-data-[state=checked]/checkbox:bg-[#1770ee]',\n        'group-data-[state=indeterminate]/checkbox:border-[#1770ee] group-data-[state=indeterminate]/checkbox:bg-[#1770ee]',\n        // Disabled (unselected) — light gray border\n        'group-disabled/checkbox:border-[#cccccc]',\n        // Disabled + Selected/Indeterminate — full gray fill\n        'group-disabled/checkbox:group-data-[state=checked]/checkbox:border-[#cccccc] group-disabled/checkbox:group-data-[state=checked]/checkbox:bg-[#cccccc]',\n        'group-disabled/checkbox:group-data-[state=indeterminate]/checkbox:border-[#cccccc] group-disabled/checkbox:group-data-[state=indeterminate]/checkbox:bg-[#cccccc]',\n        // Focus ring on the visible box (not the surrounding hit area)\n        'group-focus-visible/checkbox:ring-2 group-focus-visible/checkbox:ring-ring group-focus-visible/checkbox:ring-offset-2',\n      )}\n    >\n      <CheckboxPrimitive.Indicator className=\"flex h-full w-full items-center justify-center text-white\">\n        <svg\n          viewBox=\"0 0 14 14\"\n          fill=\"none\"\n          className=\"hidden h-[13px] w-[13px] group-data-[state=checked]/checkbox:block\"\n          aria-hidden=\"true\"\n        >\n          <path\n            d=\"M2.5 7.5l3 3 6-6.5\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n          />\n        </svg>\n        <svg\n          viewBox=\"0 0 14 14\"\n          fill=\"none\"\n          className=\"hidden h-[13px] w-[13px] group-data-[state=indeterminate]/checkbox:block\"\n          aria-hidden=\"true\"\n        >\n          <path\n            d=\"M3 7h8\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n          />\n        </svg>\n      </CheckboxPrimitive.Indicator>\n    </span>\n  </CheckboxPrimitive.Root>\n));\nCheckbox.displayName = 'Checkbox';\n\nexport { Checkbox };\n",
+      "type": "registry:ui",
+      "target": "components/ui/checkbox.tsx"
+    }
+  ]
+}

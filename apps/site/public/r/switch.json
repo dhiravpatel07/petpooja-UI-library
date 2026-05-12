@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:ui",
+  "title": "Switch",
+  "description": "Toggle switch with Large (52×32) and Small (44×24) sizes, optional check icon, and Disabled state. 16 documented variants (Selected × Type × Size × Icon). Built on Radix Switch for ARIA, focus, and keyboard support. Pixel-perfect port of Figma node 2382:278 (Pantheon › Switch).",
+  "dependencies": [
+    "@radix-ui/react-switch"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/switch.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport * as SwitchPrimitive from '@radix-ui/react-switch';\nimport { cva, type VariantProps } from 'class-variance-authority';\nimport { cn } from '@/lib/utils';\n\n// Pixel-perfect port of Figma node 2382:278 (Pantheon › Switch).\n//\n// Sixteen documented variants: Selected × Type × Size × Icon. They're\n// handled by the `size`, `icon`, and `disabled` props plus Radix Switch's\n// `checked` state — no separate components needed.\n//\n// Tokens from Figma:\n//   • Large: 52×32 track, 24×24 thumb, px-1 py-0.5\n//   • Small: 44×24 track, 16×16 thumb, p-1\n//   • Off enabled track:  #f0f0f0 + 16% black overlay ≈ #c9c9c9\n//   • On enabled track:   #1770ee (buttons/primary)\n//   • Disabled track:     #f0f0f0 + 8% black overlay ≈ #dddddd (either state)\n//   • Thumb:              white, fully rounded\n//   • Icon (when on):     #1770ee check inside the thumb\n\nconst switchTrack = cva(\n  cn(\n    'peer group/switch inline-flex shrink-0 cursor-pointer items-center rounded-full transition-colors',\n    // Default (off, enabled) — dark gray\n    'bg-[#c9c9c9]',\n    // On, enabled — primary blue\n    'data-[state=checked]:bg-[#1770ee]',\n    // Disabled — overrides both (always lighter gray)\n    'disabled:cursor-not-allowed disabled:bg-[#dddddd]',\n    'data-[state=checked]:disabled:bg-[#dddddd]',\n    // Focus\n    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',\n  ),\n  {\n    variants: {\n      size: {\n        large: 'h-8 w-[52px] px-1 py-0.5',\n        small: 'h-6 w-11 p-1',\n      },\n    },\n    defaultVariants: { size: 'large' },\n  },\n);\n\nconst switchThumb = cva(\n  cn(\n    'pointer-events-none flex items-center justify-center rounded-full bg-white shadow-sm transition-transform',\n    // Translate 20px when on — same for both sizes because the math works out\n    'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5',\n  ),\n  {\n    variants: {\n      size: {\n        large: 'h-6 w-6',\n        small: 'h-4 w-4',\n      },\n    },\n    defaultVariants: { size: 'large' },\n  },\n);\n\nexport interface SwitchProps\n  extends React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>,\n    VariantProps<typeof switchTrack> {\n  /** Show a check icon inside the thumb when on. Matches the Figma `Icon=True` variant. */\n  icon?: boolean;\n}\n\nconst Switch = React.forwardRef<\n  React.ElementRef<typeof SwitchPrimitive.Root>,\n  SwitchProps\n>(({ className, size = 'large', icon = false, ...props }, ref) => (\n  <SwitchPrimitive.Root\n    ref={ref}\n    className={cn(switchTrack({ size }), className)}\n    {...props}\n  >\n    <SwitchPrimitive.Thumb className={switchThumb({ size })}>\n      {icon && (\n        <svg\n          viewBox=\"0 0 16 16\"\n          fill=\"none\"\n          aria-hidden=\"true\"\n          className={cn(\n            // Only render visibly when track is checked — fades in/out\n            'opacity-0 transition-opacity text-[#1770ee] group-data-[state=checked]/switch:opacity-100',\n            size === 'small' ? 'h-2.5 w-2.5' : 'h-4 w-4',\n          )}\n        >\n          <path\n            d=\"M3 8.5l3 3 7-7\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n          />\n        </svg>\n      )}\n    </SwitchPrimitive.Thumb>\n  </SwitchPrimitive.Root>\n));\nSwitch.displayName = 'Switch';\n\nexport { Switch };\n",
+      "type": "registry:ui",
+      "target": "components/ui/switch.tsx"
+    }
+  ]
+}

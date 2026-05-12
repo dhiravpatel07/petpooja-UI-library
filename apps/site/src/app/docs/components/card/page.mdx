@@ -1,0 +1,344 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SubcomponentList } from '@/components/subcomponent-list';
+import {
+  CardStacked,
+  CardHorizontal,
+  CardInteractiveDemo,
+} from '@/components/demos/card-demo';
+
+# Card
+
+Surface for grouping related content. Two layouts and an optional interactive mode.
+
+- **Stacked** — full-width media on top, title block + actions below. Use for content lists where each card stands alone.
+- **Horizontal** — square thumbnail on the left, title block + trailing slot on the right. Use for compact list rows.
+
+When `interactive`, the card becomes a focusable, keyboard-activatable button with a `#fafafa` Pressed state. Pixel-perfect port of Figma node `2:113`.
+
+## Installation
+
+<InstallCommand name="card" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<Card variant="stacked">
+  <CardSectionHeader>
+    <CardTitle size="lg" />
+  </CardSectionHeader>
+  <CardMedia />
+  <CardContent>
+    <CardTitle />
+    <CardSubtitle />
+    <CardDescription />
+    <CardFooter />
+  </CardContent>
+</Card>
+```
+
+## Types
+
+### Stacked
+
+<ComponentPreview
+  previewClassName="!min-h-[560px] !p-8"
+  preview={<CardStacked />}
+  code={`<Card variant="stacked">
+  <CardSectionHeader>
+    <CardTitle size="lg">Header</CardTitle>
+  </CardSectionHeader>
+  <CardMedia>
+    <Illustration />
+  </CardMedia>
+  <CardContent>
+    <div className="flex w-full flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <CardTitle>Title</CardTitle>
+        <CardSubtitle>Subtitle</CardSubtitle>
+      </div>
+      <CardDescription>Lorem ipsum dolor sit amet…</CardDescription>
+    </div>
+    <CardFooter>
+      <button className={secondaryBtn}>Secondary</button>
+      <button className={primaryBtn}>Primary</button>
+    </CardFooter>
+  </CardContent>
+</Card>`}
+/>
+
+### Horizontal
+
+<ComponentPreview
+  previewClassName="!min-h-[160px] !p-8"
+  preview={<CardHorizontal />}
+  code={`<Card variant="horizontal">
+  <CardMedia>
+    <Thumbnail />
+  </CardMedia>
+  <CardContent>
+    <div className="flex flex-1 flex-col gap-1">
+      <CardTitle>Header</CardTitle>
+      <CardSubtitle>Subheader</CardSubtitle>
+    </div>
+    <button className="h-12 w-12 rounded-[12px] p-2" aria-label="More">
+      <ChevronRight />
+    </button>
+  </CardContent>
+</Card>`}
+/>
+
+## States
+
+### Default vs Pressed
+
+The Pressed state is just the active state — Figma documents it explicitly because it's part of the interactive feedback. The component triggers it via the `:active` pseudo-class when `interactive` is set; consumers can also force it for documentation by overriding the background.
+
+<ComponentPreview
+  previewClassName="!min-h-[600px] !p-6"
+  preview={
+    <div className="grid grid-cols-2 gap-6">
+      <div className="flex flex-col items-center gap-3">
+        <CardStacked />
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          Default
+        </span>
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <CardStacked pressed />
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          Pressed
+        </span>
+      </div>
+    </div>
+  }
+  code={`{/* Default */}
+<Card variant="stacked">…</Card>
+
+{/* Pressed — applied via the :active pseudo-class on interactive cards */}
+<Card variant="stacked" interactive>…</Card>`}
+/>
+
+<ComponentPreview
+  previewClassName="!min-h-[260px] !p-6"
+  preview={
+    <div className="flex flex-col gap-4">
+      <CardHorizontal />
+      <CardHorizontal pressed />
+    </div>
+  }
+  code={`<Card variant="horizontal">…</Card>
+<Card variant="horizontal" interactive>…</Card>`}
+/>
+
+## Interactive
+
+When `interactive`, the card:
+
+- Receives `role="button"` and `tabIndex={0}` so screen readers announce it correctly and keyboard users can focus it.
+- Activates on **Enter** and **Space** in addition to mouse clicks.
+- Triggers the Pressed background (`#fafafa`) via `:active` while a click is held.
+- Gets a focus ring on `focus-visible` to satisfy keyboard accessibility.
+
+<ComponentPreview
+  previewClassName="!min-h-[220px] !p-8"
+  preview={<CardInteractiveDemo />}
+  code={`<Card
+  variant="horizontal"
+  interactive
+  onClick={() => console.log('clicked')}
+>
+  <CardMedia />
+  <CardContent>
+    <div className="flex flex-1 flex-col gap-1">
+      <CardTitle>Tap me</CardTitle>
+      <CardSubtitle>Hold to see the pressed state</CardSubtitle>
+    </div>
+    <ChevronRight />
+  </CardContent>
+</Card>`}
+/>
+
+## API
+
+### `Card`
+
+<PropsTable
+  rows={[
+    {
+      name: 'variant',
+      type: "'stacked' | 'horizontal'",
+      default: "'stacked'",
+      description: <>Layout direction. <code>stacked</code> stacks media above content; <code>horizontal</code> places media to the left.</>,
+    },
+    {
+      name: 'interactive',
+      type: 'boolean',
+      default: 'false',
+      description: <>Makes the card a focusable, keyboard-activatable button with the Pressed (<code>#fafafa</code>) active state.</>,
+    },
+    {
+      name: 'onClick',
+      type: '(event: MouseEvent) => void',
+      description: <>Standard click handler. Also fires on Enter/Space when <code>interactive</code> is true.</>,
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: <>Merged onto the root via <code>tailwind-merge</code>. Use to constrain width, override radius, etc.</>,
+    },
+  ]}
+/>
+
+### `CardTitle`
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'md' | 'lg'",
+      default: "'md'",
+      description: <><code>md</code> = Title Medium 16/24 (in-body titles). <code>lg</code> = Title Large 18/26 (the top-of-card Header).</>,
+    },
+    {
+      name: 'as',
+      type: "'h2' | 'h3' | 'h4' | 'p'",
+      default: "'h3'",
+      description: 'Rendered element. Keep the heading level consistent with your page outline.',
+    },
+  ]}
+/>
+
+<SubcomponentList
+  rows={[
+    {
+      name: 'CardSectionHeader',
+      forwardsTo: 'div',
+      description: 'Top section for the Stacked variant. Pads to px-4 py-6; sits flush above CardMedia.',
+    },
+    {
+      name: 'CardMedia',
+      forwardsTo: 'div',
+      description: 'Visual slot with the surface/tertiary gray fill. Sizes itself by variant — 188px tall in Stacked, 80px wide in Horizontal.',
+    },
+    {
+      name: 'CardContent',
+      forwardsTo: 'div',
+      description: 'Main body. Switches from column (gap-8 px-4 py-6) in Stacked to row (gap-8 p-4) in Horizontal.',
+    },
+    {
+      name: 'CardSubtitle',
+      forwardsTo: 'p',
+      description: 'Subtitle under a Title. Black in Stacked, #666 in Horizontal — adapts via the card variant context.',
+    },
+    {
+      name: 'CardDescription',
+      forwardsTo: 'p',
+      description: 'Body copy for Stacked cards. Inter Regular 14/22 in text/secondary (#666).',
+    },
+    {
+      name: 'CardFooter',
+      forwardsTo: 'div',
+      description: 'Action row, right-aligned with a gap-2. Holds the Secondary + Primary buttons in the Figma reference.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Container radius',
+      value: '10 px',
+      visual: (
+        <div className="h-10 w-10 rounded-[10px] border-2 border-foreground/30 bg-background" />
+      ),
+    },
+    {
+      label: 'Border',
+      value: '1px solid #e5e5e5',
+      visual: <div className="h-9 w-9 rounded-md border border-[#e5e5e5] bg-background" />,
+    },
+    {
+      label: 'Surface — Default',
+      value: '#ffffff',
+      figmaName: 'surface/primary',
+      visual: <div className="h-9 w-9 rounded-md bg-white ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Surface — Pressed',
+      value: '#fafafa',
+      figmaName: 'surface/secondary',
+      visual: <div className="h-9 w-9 rounded-md bg-[#fafafa] ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Media surface',
+      value: '#f0f0f0',
+      figmaName: 'surface/tertiary',
+      visual: <div className="h-9 w-9 rounded-md bg-[#f0f0f0]" />,
+    },
+    {
+      label: 'Title — Large',
+      value: 'Inter Semi-Bold 18 / 26',
+      figmaName: 'CardSectionHeader',
+      visual: <span className="text-[18px] font-semibold leading-[26px]">Aa</span>,
+    },
+    {
+      label: 'Title — Medium',
+      value: 'Inter Semi-Bold 16 / 24',
+      visual: <span className="text-[16px] font-semibold leading-[24px]">Aa</span>,
+    },
+    {
+      label: 'Body / Description',
+      value: 'Inter Regular 14 / 22',
+      figmaName: 'text/secondary · #666',
+      visual: <span className="text-[14px] font-normal leading-[22px] text-[#666666]">Aa</span>,
+    },
+    {
+      label: 'Stacked media height',
+      value: '188 px',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          188
+        </div>
+      ),
+    },
+    {
+      label: 'Horizontal media width',
+      value: '80 px',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          80
+        </div>
+      ),
+    },
+    {
+      label: 'Section padding',
+      value: '24 / 16 px',
+      figmaName: 'header & body',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-md border border-dashed border-[#7e00d2]/40 bg-[#7e00d2]/5 text-[10px] font-medium text-[#7e00d2]">
+          24·16
+        </div>
+      ),
+    },
+    {
+      label: 'Footer gap',
+      value: '8 px',
+      visual: (
+        <div className="flex items-center gap-2">
+          <span className="h-5 w-5 rounded bg-zinc-300" />
+          <span className="h-5 w-5 rounded bg-zinc-300" />
+        </div>
+      ),
+    },
+  ]}
+/>

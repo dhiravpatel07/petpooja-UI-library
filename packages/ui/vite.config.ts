@@ -26,7 +26,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@/lib': resolve(__dirname, 'src/registry/lib'),
+      '@/components/ui': resolve(__dirname, 'src/registry/ui'),
+      '@/registry': resolve(__dirname, 'src/registry'),
     },
   },
   build: {
@@ -36,7 +38,15 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        /^@radix-ui\//,
+        'react-day-picker',
+        'date-fns',
+        /^date-fns\//,
+      ],
       output: {
         globals: {
           react: 'React',

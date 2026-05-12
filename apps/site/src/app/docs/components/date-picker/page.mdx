@@ -1,0 +1,290 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SubcomponentList } from '@/components/subcomponent-list';
+import { DatePickerStandaloneDemo } from '@/components/demos/date-picker-demo';
+
+# Date Picker
+
+Full date-range picker UX from Figma node `3980:641` — a bottom-sheet panel with a header, range display, calendar grid, quick-pick chips (Today / Yesterday / Last 7 days / etc.), and Cancel / Confirm actions.
+
+Built on **`react-day-picker`** for the calendar engine (date math, month nav, keyboard navigation, locale handling, accessible semantics) and `date-fns` for preset calculations. Pixel-perfect to the Figma design — `34×34` cells, `8px` corner radius, `#3a84ec` selected fill, `#ebf3fd` range strip, all matched exactly.
+
+## Installation
+
+<InstallCommand name="date-picker" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Date picker
+
+The full Figma UX — try clicking dates to build a range, or tap a preset chip. The committed range is shown after you Confirm.
+
+<ComponentPreview
+  previewClassName="!min-h-[760px] !p-6"
+  preview={<DatePickerStandaloneDemo />}
+  code={`'use client';
+import { useState } from 'react';
+import type { DateRange } from 'react-day-picker';
+import { DatePicker } from '@petpooja/ui';
+
+export function Demo() {
+  const [range, setRange] = useState<DateRange | undefined>({
+    from: new Date(2026, 0, 22),
+    to: new Date(2026, 0, 29),
+  });
+
+  return (
+    <DatePicker
+      value={range}
+      onChange={setRange}
+      onCancel={() => console.log('cancelled')}
+    />
+  );
+}`}
+/>
+
+## Using inside a Bottom Sheet
+
+DatePicker is presentational — drop it into your existing modal/sheet. With our BottomSheet:
+
+```tsx
+'use client';
+import { useState } from 'react';
+import {
+  BottomSheet,
+  BottomSheetTrigger,
+  BottomSheetContent,
+  DatePicker,
+} from '@petpooja/ui';
+
+export function Demo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <BottomSheet open={open} onOpenChange={setOpen}>
+      <BottomSheetTrigger>Pick a date</BottomSheetTrigger>
+      <BottomSheetContent className="!h-auto !max-w-[375px]">
+        <DatePicker
+          onChange={(range) => {
+            console.log(range);
+            setOpen(false);
+          }}
+          onCancel={() => setOpen(false)}
+        />
+      </BottomSheetContent>
+    </BottomSheet>
+  );
+}
+```
+
+## API
+
+### `DatePicker`
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'DateRange | undefined',
+      description: <>Initial / committed range. Pair with <code>onChange</code>.</>,
+    },
+    {
+      name: 'onChange',
+      type: '(range: DateRange | undefined) => void',
+      description: 'Fires when the user clicks Confirm. The draft up to that point becomes the value.',
+    },
+    {
+      name: 'onCancel',
+      type: '() => void',
+      description: 'Fires when the user clicks Cancel or the close (×) button.',
+    },
+    {
+      name: 'title',
+      type: 'string',
+      default: "'Select Date'",
+      description: 'Header title text.',
+    },
+    {
+      name: 'presets',
+      type: 'DatePickerPreset[]',
+      description: <>Quick-pick chip definitions. Defaults to the 7 presets from Figma. Pass <code>[]</code> to hide the section.</>,
+    },
+    {
+      name: 'today',
+      type: 'Date',
+      description: 'Anchor used by presets and the calendar default month. Defaults to today.',
+    },
+  ]}
+/>
+
+### `Calendar`
+
+Wraps [`react-day-picker`](https://daypicker.dev/) — accepts every `DayPickerProps`. The most common props:
+
+<PropsTable
+  rows={[
+    {
+      name: 'mode',
+      type: "'single' | 'multiple' | 'range'",
+      default: "'single'",
+      description: 'Selection model.',
+    },
+    {
+      name: 'selected',
+      type: 'Date | Date[] | DateRange',
+      description: <>Controlled selection. Shape depends on <code>mode</code>.</>,
+    },
+    {
+      name: 'onSelect',
+      type: 'function',
+      description: 'Fires whenever the selection changes.',
+    },
+    {
+      name: 'defaultMonth',
+      type: 'Date',
+      description: 'Month displayed on mount.',
+    },
+    {
+      name: 'disabled',
+      type: 'Date | Date[] | DateRange | Matcher | Matcher[]',
+      description: 'Dates the user cannot select.',
+    },
+    {
+      name: 'numberOfMonths',
+      type: 'number',
+      default: '1',
+      description: 'Number of months to display side-by-side.',
+    },
+  ]}
+/>
+
+<SubcomponentList
+  title="Default presets"
+  rows={[
+    { name: 'today', description: 'Today only.' },
+    { name: 'yesterday', description: 'Yesterday only.' },
+    { name: 'last7', description: 'Today through 6 days ago.' },
+    { name: 'last30', description: 'Today through 29 days ago.' },
+    { name: 'thisMonth', description: 'First through last day of the current calendar month.' },
+    { name: 'lastMonth', description: 'First through last day of the previous calendar month.' },
+    { name: 'custom', description: 'Pass-through — preserves whatever range the user has dragged on the calendar.' },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `3980:641`.
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Container width',
+      value: '375 px',
+      figmaName: 'Merchant App bottom sheet',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          375
+        </div>
+      ),
+    },
+    {
+      label: 'Top radius',
+      value: '30 px',
+      visual: (
+        <div className="h-10 w-10 overflow-hidden">
+          <div className="h-full w-full rounded-t-[30px] border-2 border-foreground/30 bg-background" />
+        </div>
+      ),
+    },
+    {
+      label: 'Day cell',
+      value: '34 × 34 px',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-white text-[14px] font-normal ring-1 ring-inset ring-border">
+          15
+        </div>
+      ),
+    },
+    {
+      label: 'Day cell radius',
+      value: '8 px',
+      visual: (
+        <div className="h-9 w-9 rounded-[8px] border-2 border-foreground/30" />
+      ),
+    },
+    {
+      label: 'Selected fill',
+      value: '#3a84ec',
+      figmaName: 'button/secondary',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[#3a84ec] text-[12px] font-semibold text-white">
+          22
+        </div>
+      ),
+    },
+    {
+      label: 'Range strip',
+      value: '#ebf3fd',
+      figmaName: 'surface/brand-secondary',
+      visual: <div className="h-9 w-9 rounded-[8px] bg-[#ebf3fd]" />,
+    },
+    {
+      label: 'Outside / muted text',
+      value: '#666666',
+      figmaName: 'text/secondary',
+      visual: (
+        <span className="text-[14px] font-normal leading-5 text-[#666666]">28</span>
+      ),
+    },
+    {
+      label: 'Active text',
+      value: '#000000',
+      figmaName: 'text/primary',
+      visual: <span className="text-[14px] font-normal leading-5 text-black">15</span>,
+    },
+    {
+      label: 'Range display',
+      value: 'Inter Medium 24 / 32',
+      figmaName: 'Display Medium',
+      visual: (
+        <span className="text-[20px] font-medium leading-[28px] text-black">22 Jan</span>
+      ),
+    },
+    {
+      label: 'Weekday label',
+      value: 'Inter Semi-Bold 14 / 20',
+      figmaName: 'text/secondary',
+      visual: (
+        <span className="text-[14px] font-semibold leading-5 text-[#666666]">Mo</span>
+      ),
+    },
+    {
+      label: 'Day number',
+      value: 'Inter Regular 14 / 20',
+      visual: <span className="text-[14px] font-normal leading-5 text-black">15</span>,
+    },
+    {
+      label: 'Chip — Default',
+      value: 'Inter Medium 12 / 20',
+      figmaName: 'rounded-full · border #e5e5e5',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-full border border-[#e5e5e5] bg-white px-3 text-[11px] font-medium text-black">
+          Today
+        </span>
+      ),
+    },
+    {
+      label: 'Chip — Selected',
+      value: 'bg #ebf3fd · border #3a84ec',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-full border border-[#3a84ec] bg-[#ebf3fd] px-3 text-[11px] font-semibold text-[#3a84ec]">
+          Last 7 days
+        </span>
+      ),
+    },
+  ]}
+/>

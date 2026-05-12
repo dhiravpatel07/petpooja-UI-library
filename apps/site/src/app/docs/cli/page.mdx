@@ -1,0 +1,68 @@
+# CLI
+
+Petpooja UI doesn't ship its own CLI — we reuse [`shadcn`](https://ui.shadcn.com/docs/cli) and point it at our custom registry. Anything the shadcn CLI does, you can do with Petpooja components by passing a registry URL.
+
+## Add a component
+
+<InstallCommand name="badge" />
+
+The URL points to a registry-item JSON file on our docs site. The CLI:
+
+1. Fetches the JSON
+2. Resolves `registryDependencies` recursively (other components or `utils`)
+3. Writes files to paths defined by your `components.json` aliases
+4. Installs any npm dependencies declared in the registry
+
+## Registry URLs
+
+Every component is served at a predictable URL:
+
+```
+https://petpooja-ui.vercel.app/r/<component-name>.json
+```
+
+Examples:
+
+```text
+https://petpooja-ui.vercel.app/r/badge.json
+https://petpooja-ui.vercel.app/r/utils.json
+```
+
+A manifest of every available component lives at:
+
+```text
+https://petpooja-ui.vercel.app/r/index.json
+```
+
+## Init a fresh project
+
+If you've never used shadcn in this repo, run init first:
+
+```bash
+pnpm dlx shadcn@latest init
+```
+
+It will ask a few questions (style, base color, paths) and write a `components.json` in the project root. You can also pass a Petpooja component to add in the same command:
+
+```bash
+pnpm dlx shadcn@latest init https://petpooja-ui.vercel.app/r/badge.json
+```
+
+## Useful flags
+
+| Flag | Effect |
+| --- | --- |
+| `--yes` | Skip prompts (use defaults from `components.json`). |
+| `--overwrite` | Overwrite existing files. By default the CLI errors if a target file exists. |
+| `--cwd <path>` | Run from a different directory. Handy in monorepos. |
+| `--path <path>` | Override the destination directory for the added components. |
+
+## Updating components
+
+The CLI does not currently auto-update copy-pasted components. To pull a new version of a component, run `add` again with `--overwrite`:
+
+```bash
+pnpm dlx shadcn@latest add https://petpooja-ui.vercel.app/r/badge.json --overwrite
+```
+
+Diff against your local edits before accepting the overwrite — you've likely customised the component.

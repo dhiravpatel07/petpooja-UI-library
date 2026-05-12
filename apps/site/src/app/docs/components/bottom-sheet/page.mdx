@@ -1,0 +1,364 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SubcomponentList } from '@/components/subcomponent-list';
+import { BottomSheetDemo, BottomSheetStatic } from '@/components/demos/bottom-sheet-demo';
+
+# Bottom Sheet
+
+A mobile-style modal anchored to the bottom of the viewport. Slides up over an overlay; dismisses via the close icon, ESC key, or clicking outside.
+
+Built on **Radix Dialog** primitives — focus trap, ARIA roles, scroll lock, and keyboard handling come for free. Composable header / title-group / footer slots match the Figma component (node `66:687`) pixel-for-pixel and let consumers compose any of the three documented states.
+
+## Installation
+
+<InstallCommand name="bottom-sheet" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<BottomSheet>
+  <BottomSheetTrigger />
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitleGroup>
+        <BottomSheetTitle />
+        <BottomSheetDescription />
+      </BottomSheetTitleGroup>
+      <BottomSheetCloseIcon />
+    </BottomSheetHeader>
+
+    {/* arbitrary body content */}
+
+    <BottomSheetFooter>
+      <BottomSheetClose />
+      {/* primary action */}
+    </BottomSheetFooter>
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+## Live demo
+
+Click the button — a real bottom sheet slides up over the page.
+
+<ComponentPreview
+  preview={<BottomSheetDemo variant="default" label="Open default" />}
+  code={`'use client';
+import {
+  BottomSheet,
+  BottomSheetTrigger,
+  BottomSheetContent,
+  BottomSheetHeader,
+  BottomSheetTitleGroup,
+  BottomSheetTitle,
+  BottomSheetCloseIcon,
+  BottomSheetFooter,
+  BottomSheetClose,
+} from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <BottomSheet>
+      <BottomSheetTrigger className={primaryBtn}>Open default</BottomSheetTrigger>
+      <BottomSheetContent>
+        <BottomSheetHeader>
+          <BottomSheetTitleGroup>
+            <BottomSheetTitle>Title</BottomSheetTitle>
+          </BottomSheetTitleGroup>
+          <BottomSheetCloseIcon />
+        </BottomSheetHeader>
+        <BottomSheetFooter>
+          <BottomSheetClose className={secondaryBtn}>Secondary</BottomSheetClose>
+          <BottomSheetClose className={primaryBtn}>Primary</BottomSheetClose>
+        </BottomSheetFooter>
+      </BottomSheetContent>
+    </BottomSheet>
+  );
+}`}
+/>
+
+## States
+
+Three documented states from Figma. Each is just a different composition of the same primitives — no separate variants required.
+
+### State = Default
+
+Title only, no subtitle. Buttons in the footer.
+
+<ComponentPreview
+  previewClassName="!min-h-[660px] !p-6 !items-end"
+  preview={<BottomSheetStatic variant="default" />}
+  code={`<BottomSheetContent>
+  <BottomSheetHeader>
+    <BottomSheetTitleGroup>
+      <BottomSheetTitle>Title</BottomSheetTitle>
+    </BottomSheetTitleGroup>
+    <BottomSheetCloseIcon />
+  </BottomSheetHeader>
+  <BottomSheetFooter>
+    <BottomSheetClose className={secondaryBtn}>Secondary</BottomSheetClose>
+    <BottomSheetClose className={primaryBtn}>Primary</BottomSheetClose>
+  </BottomSheetFooter>
+</BottomSheetContent>`}
+/>
+
+### State = Subtitle
+
+Title plus a supporting line of secondary text underneath.
+
+<ComponentPreview
+  previewClassName="!min-h-[660px] !p-6 !items-end"
+  preview={<BottomSheetStatic variant="subtitle" />}
+  code={`<BottomSheetContent>
+  <BottomSheetHeader>
+    <BottomSheetTitleGroup>
+      <BottomSheetTitle>Title</BottomSheetTitle>
+      <BottomSheetDescription>Subtitle</BottomSheetDescription>
+    </BottomSheetTitleGroup>
+    <BottomSheetCloseIcon />
+  </BottomSheetHeader>
+  <BottomSheetFooter>
+    <BottomSheetClose className={secondaryBtn}>Secondary</BottomSheetClose>
+    <BottomSheetClose className={primaryBtn}>Primary</BottomSheetClose>
+  </BottomSheetFooter>
+</BottomSheetContent>`}
+/>
+
+### State = Zero State
+
+No title in the header — just a close icon. A 250px media area sits at the top, followed by a centered title (Large size) and description, with the action buttons pinned to the bottom.
+
+<ComponentPreview
+  previewClassName="!min-h-[660px] !p-6 !items-end"
+  preview={<BottomSheetStatic variant="zero" />}
+  code={`<BottomSheetContent>
+  <div className="flex w-full flex-col">
+    <BottomSheetHeader className="justify-end">
+      <BottomSheetCloseIcon />
+    </BottomSheetHeader>
+    <div className="flex w-full flex-col gap-6">
+      <div className="h-[250px] w-full bg-[#f0f0f0]">{/* media */}</div>
+      <div className="flex flex-col items-center gap-2 px-6 text-center">
+        <BottomSheetTitle size="lg">Title</BottomSheetTitle>
+        <BottomSheetDescription>Lorem ipsum…</BottomSheetDescription>
+      </div>
+    </div>
+  </div>
+  <BottomSheetFooter>
+    <BottomSheetClose className={secondaryBtn}>Secondary</BottomSheetClose>
+    <BottomSheetClose className={primaryBtn}>Primary</BottomSheetClose>
+  </BottomSheetFooter>
+</BottomSheetContent>`}
+/>
+
+## API
+
+### `BottomSheet`
+
+Root provider — wraps `Dialog.Root` from Radix. Controls open state.
+
+<PropsTable
+  rows={[
+    {
+      name: 'open',
+      type: 'boolean',
+      description: <>Controlled open state. Omit for uncontrolled mode driven by <code>BottomSheetTrigger</code>.</>,
+    },
+    {
+      name: 'defaultOpen',
+      type: 'boolean',
+      default: 'false',
+      description: 'Initial open state when uncontrolled.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Fires whenever the sheet opens or closes.',
+    },
+    {
+      name: 'modal',
+      type: 'boolean',
+      default: 'true',
+      description: <>When <code>true</code>, page content behind the overlay is inert.</>,
+    },
+  ]}
+/>
+
+### `BottomSheetContent`
+
+The sliding panel itself. Renders into a portal and animates from the bottom.
+
+<PropsTable
+  rows={[
+    {
+      name: 'hideOverlay',
+      type: 'boolean',
+      default: 'false',
+      description: 'Suppress the dimmed backdrop. Useful for embedding the sheet in a custom layout.',
+    },
+    {
+      name: 'onEscapeKeyDown',
+      type: '(event: KeyboardEvent) => void',
+      description: 'Intercept the ESC keypress before Radix dismisses the sheet.',
+    },
+    {
+      name: 'onPointerDownOutside',
+      type: '(event: PointerDownOutsideEvent) => void',
+      description: 'Intercept clicks on the overlay. Call event.preventDefault() to keep the sheet open.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: <>Merged onto the panel via <code>tailwind-merge</code>. Override sizing, radius, or animations.</>,
+    },
+  ]}
+/>
+
+### `BottomSheetTitle`
+
+Title text. Aliased to `Dialog.Title` so screen readers announce it as the sheet's heading.
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'md' | 'lg'",
+      default: "'md'",
+      description: <><code>md</code> matches Default/Subtitle states (16/24). <code>lg</code> matches Zero State (18/26).</>,
+    },
+  ]}
+/>
+
+<SubcomponentList
+  rows={[
+    {
+      name: 'BottomSheetDescription',
+      forwardsTo: 'Dialog.Description',
+      description: 'Secondary line under the title. Inter Regular 14 / 22, color #666.',
+    },
+    {
+      name: 'BottomSheetHeader',
+      forwardsTo: 'div',
+      description: 'Top row container. Lays out title block + close icon with px-6 py-4 spacing.',
+    },
+    {
+      name: 'BottomSheetTitleGroup',
+      forwardsTo: 'div',
+      description: 'Vertical stack for Title + Description with a 4px gap.',
+    },
+    {
+      name: 'BottomSheetFooter',
+      forwardsTo: 'div',
+      description: 'Bottom row container for action buttons. Equal-width children with 10px gap.',
+    },
+    {
+      name: 'BottomSheetCloseIcon',
+      forwardsTo: 'Dialog.Close',
+      description: 'Pre-styled 20×20 close button with the X glyph. Dismisses the sheet on click.',
+    },
+    {
+      name: 'BottomSheetClose',
+      forwardsTo: 'Dialog.Close',
+      description: 'Generic close button — wrap any element (e.g. a custom button) to dismiss the sheet.',
+    },
+    {
+      name: 'BottomSheetOverlay',
+      forwardsTo: 'Dialog.Overlay',
+      description: 'The dimmed backdrop. Override its className or hide it via the Content prop.',
+    },
+    {
+      name: 'BottomSheetPortal',
+      forwardsTo: 'Dialog.Portal',
+      description: 'Render-target portal. Pass `container` to mount somewhere other than document.body.',
+    },
+  ]}
+/>
+
+All forward refs and accept every prop of their underlying primitive.
+
+## Design tokens
+
+Specs from Figma node `66:687` (Pantheon › Bottom Sheets).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Container width',
+      value: '375 px',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          375
+        </div>
+      ),
+    },
+    {
+      label: 'Container height',
+      value: '600 px',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          600
+        </div>
+      ),
+    },
+    {
+      label: 'Top radius',
+      value: '30 px',
+      visual: (
+        <div className="h-10 w-10 overflow-hidden">
+          <div className="h-full w-full rounded-t-[30px] border-2 border-foreground/30 bg-background" />
+        </div>
+      ),
+    },
+    {
+      label: 'Border',
+      value: '1px solid #e6e6e6',
+      visual: <div className="h-9 w-9 rounded-md border border-[#e6e6e6] bg-background" />,
+    },
+    {
+      label: 'Shadow',
+      value: '0 1px 2px rgba(0,0,0,0.05)',
+      visual: (
+        <div className="h-8 w-8 rounded-md bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ring-1 ring-inset ring-border" />
+      ),
+    },
+    {
+      label: 'Section padding',
+      value: '24 / 16 px',
+      figmaName: 'header & footer',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-md border border-dashed border-[#7e00d2]/40 bg-[#7e00d2]/5 text-[10px] font-medium text-[#7e00d2]">
+          24·16
+        </div>
+      ),
+    },
+    {
+      label: 'Title (md)',
+      value: 'Inter Semi-Bold 16 / 24',
+      visual: <span className="text-[16px] font-semibold leading-[24px]">Aa</span>,
+    },
+    {
+      label: 'Title (lg)',
+      value: 'Inter Semi-Bold 18 / 26',
+      visual: <span className="text-[18px] font-semibold leading-[26px]">Aa</span>,
+    },
+    {
+      label: 'Description',
+      value: 'Inter Regular 14 / 22',
+      figmaName: 'text/secondary · #666',
+      visual: <span className="text-[14px] font-normal leading-[22px] text-[#666666]">Aa</span>,
+    },
+    {
+      label: 'Media area (Zero State)',
+      value: '250 × full px',
+      figmaName: 'surface/tertiary · #f0f0f0',
+      visual: <div className="h-9 w-9 rounded-md bg-[#f0f0f0]" />,
+    },
+  ]}
+/>

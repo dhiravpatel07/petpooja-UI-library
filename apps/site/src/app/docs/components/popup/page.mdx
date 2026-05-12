@@ -1,0 +1,357 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SubcomponentList } from '@/components/subcomponent-list';
+import {
+  PopupDefaultDemo,
+  PopupImageDemo,
+  PopupBothDemo,
+} from '@/components/demos/popup-demo';
+
+# Popup
+
+Centered modal for confirmations, alerts, and short content surfaces. Two documented variants from Figma: **Default** (icon + title + body + actions) and **Image** (media + title + description + actions).
+
+Built on **Radix Dialog** so ARIA roles, focus trap, ESC dismissal, scroll lock, and click-outside come for free. Pixel-perfect port of Figma node `66:688`.
+
+## Installation
+
+<InstallCommand name="popup" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<Popup>
+  <PopupTrigger />
+  <PopupContent>
+    {/* Default: */}
+    <PopupHeader>
+      <PopupTitle />
+      <PopupCloseIcon />
+    </PopupHeader>
+    <PopupBody>
+      <PopupDescription />
+    </PopupBody>
+
+    {/* …or Image variant: */}
+    <PopupMedia>
+      <img />
+      <PopupCloseIcon className="absolute right-4 top-4" />
+    </PopupMedia>
+    <PopupBody>
+      <PopupTitle />
+      <PopupDescription />
+    </PopupBody>
+
+    <PopupFooter>
+      <PopupClose>Secondary</PopupClose>
+      <PopupClose>Primary</PopupClose>
+    </PopupFooter>
+  </PopupContent>
+</Popup>
+```
+
+## Live demo
+
+Click either trigger — a real popup opens centered on the page. ESC, click-outside, or the X button dismiss it.
+
+<ComponentPreview
+  previewClassName="!min-h-[220px] !p-8"
+  preview={<PopupBothDemo />}
+  code={`'use client';
+import {
+  Popup,
+  PopupTrigger,
+  PopupContent,
+  PopupHeader,
+  PopupBody,
+  PopupFooter,
+  PopupMedia,
+  PopupTitle,
+  PopupDescription,
+  PopupClose,
+  PopupCloseIcon,
+} from '@petpooja/ui';
+
+export function DefaultDemo() {
+  return (
+    <Popup>
+      <PopupTrigger className={triggerBtn}>Open default popup</PopupTrigger>
+      <PopupContent>
+        <PopupHeader>
+          <div className="flex items-center gap-2">
+            <Icon />
+            <PopupTitle>Title</PopupTitle>
+          </div>
+          <PopupCloseIcon />
+        </PopupHeader>
+        <PopupBody>
+          <PopupDescription>Maecenas efficitur molestie ligula…</PopupDescription>
+        </PopupBody>
+        <PopupFooter>
+          <PopupClose className={secondaryBtn}>Secondary</PopupClose>
+          <PopupClose className={primaryBtn}>Primary</PopupClose>
+        </PopupFooter>
+      </PopupContent>
+    </Popup>
+  );
+}
+
+export function ImageDemo() {
+  return (
+    <Popup>
+      <PopupTrigger className={triggerBtn}>Open image popup</PopupTrigger>
+      <PopupContent>
+        <PopupMedia>
+          <img src="..." alt="" />
+          <PopupCloseIcon className="absolute right-4 top-4" />
+        </PopupMedia>
+        <PopupBody>
+          <PopupTitle>Title</PopupTitle>
+          <PopupDescription>Maecenas efficitur molestie ligula…</PopupDescription>
+        </PopupBody>
+        <PopupFooter>
+          <PopupClose className={secondaryBtn}>Secondary</PopupClose>
+          <PopupClose className={primaryBtn}>Primary</PopupClose>
+        </PopupFooter>
+      </PopupContent>
+    </Popup>
+  );
+}`}
+/>
+
+## API
+
+### `Popup`
+
+Root provider. Wraps Radix `Dialog.Root` — controls open state.
+
+<PropsTable
+  rows={[
+    {
+      name: 'open',
+      type: 'boolean',
+      description: <>Controlled open state. Omit for uncontrolled mode driven by <code>PopupTrigger</code>.</>,
+    },
+    {
+      name: 'defaultOpen',
+      type: 'boolean',
+      default: 'false',
+      description: 'Initial open state when uncontrolled.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Fires whenever the popup opens or closes.',
+    },
+    {
+      name: 'modal',
+      type: 'boolean',
+      default: 'true',
+      description: <>When <code>true</code>, page content behind the overlay is inert.</>,
+    },
+  ]}
+/>
+
+### `PopupContent`
+
+The actual popup panel — rendered into a portal, animated in with a fade + subtle scale.
+
+<PropsTable
+  rows={[
+    {
+      name: 'hideOverlay',
+      type: 'boolean',
+      default: 'false',
+      description: 'Suppress the dimmed backdrop. Useful for embedding the popup inside a custom layout.',
+    },
+    {
+      name: 'onEscapeKeyDown',
+      type: '(event: KeyboardEvent) => void',
+      description: 'Intercept ESC before Radix dismisses the popup.',
+    },
+    {
+      name: 'onPointerDownOutside',
+      type: '(event: PointerDownOutsideEvent) => void',
+      description: <>Intercept clicks on the overlay. Call <code>event.preventDefault()</code> to keep the popup open.</>,
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: <>Merged onto the panel via <code>tailwind-merge</code>. Override width, radius, animation, etc.</>,
+    },
+  ]}
+/>
+
+### `PopupTitle`
+
+Renders the modal heading. Aliased to Radix `Dialog.Title` so screen readers announce it correctly.
+
+<SubcomponentList
+  rows={[
+    {
+      name: 'PopupTrigger',
+      forwardsTo: 'Dialog.Trigger',
+      description: 'Element that opens the popup. Pair with PopupContent in the same Popup root.',
+    },
+    {
+      name: 'PopupHeader',
+      forwardsTo: 'div',
+      description: 'Top row for the Default variant. Lays out icon + title block + close icon with px-4 pt-4 spacing.',
+    },
+    {
+      name: 'PopupBody',
+      forwardsTo: 'div',
+      description: 'Vertical stack for Title / Description content. gap-2 between children, px-4 pt-4 spacing.',
+    },
+    {
+      name: 'PopupMedia',
+      forwardsTo: 'div',
+      description: 'Edge-to-edge 250px media area for the Image variant. surface/tertiary (#f0f0f0) fill, overflow-hidden.',
+    },
+    {
+      name: 'PopupFooter',
+      forwardsTo: 'div',
+      description: 'Action row pinned to the right. 24px top padding for the gap from body, 16px bottom padding.',
+    },
+    {
+      name: 'PopupDescription',
+      forwardsTo: 'Dialog.Description',
+      description: 'Body text. Inter Regular 16 / 24.',
+    },
+    {
+      name: 'PopupCloseIcon',
+      forwardsTo: 'Dialog.Close',
+      description: 'Pre-styled 20×20 close button. Place inline in PopupHeader, or absolutely position over PopupMedia.',
+    },
+    {
+      name: 'PopupClose',
+      forwardsTo: 'Dialog.Close',
+      description: 'Generic close button — wrap any element (e.g. a footer action button) to dismiss the popup on click.',
+    },
+    {
+      name: 'PopupOverlay',
+      forwardsTo: 'Dialog.Overlay',
+      description: 'The dimmed backdrop. Override its className or hide it via the Content prop.',
+    },
+    {
+      name: 'PopupPortal',
+      forwardsTo: 'Dialog.Portal',
+      description: 'Render-target portal. Pass a `container` to mount somewhere other than document.body.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `66:688` (Pantheon › Pop Up).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Container width',
+      value: '500 px',
+      figmaName: 'max-w-[500px]',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-center rounded-md bg-zinc-100 text-[10px] font-semibold text-zinc-600">
+          500
+        </div>
+      ),
+    },
+    {
+      label: 'Corner radius',
+      value: '10 px',
+      visual: (
+        <div className="h-10 w-10 rounded-[10px] border-2 border-foreground/30 bg-background" />
+      ),
+    },
+    {
+      label: 'Border',
+      value: '1px · #e6e6e6',
+      visual: <div className="h-9 w-9 rounded-md border border-[#e6e6e6] bg-background" />,
+    },
+    {
+      label: 'Shadow',
+      value: '0 1px 2px rgba(0,0,0,0.05)',
+      visual: (
+        <div className="h-8 w-8 rounded-md bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ring-1 ring-inset ring-border" />
+      ),
+    },
+    {
+      label: 'Media height',
+      value: '250 px',
+      figmaName: 'Image variant',
+      visual: <div className="h-9 w-9 rounded-md bg-[#f0f0f0]" />,
+    },
+    {
+      label: 'Title',
+      value: 'Inter Semi-Bold 18 / 26',
+      visual: <span className="text-[18px] font-semibold leading-[26px]">Aa</span>,
+    },
+    {
+      label: 'Body',
+      value: 'Inter Regular 16 / 24',
+      figmaName: 'Body Large',
+      visual: <span className="text-[16px] font-normal leading-6">Aa</span>,
+    },
+    {
+      label: 'Section padding',
+      value: '16 px',
+      figmaName: 'header / body / footer',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-md border border-dashed border-[#7e00d2]/40 bg-[#7e00d2]/5 text-[10px] font-medium text-[#7e00d2]">
+          16
+        </div>
+      ),
+    },
+    {
+      label: 'Body → Footer gap',
+      value: '24 px',
+      visual: (
+        <div className="flex flex-col gap-2">
+          <div className="h-2 w-12 rounded bg-zinc-300" />
+          <div className="h-2 w-12 rounded bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Footer button gap',
+      value: '16 px',
+      visual: (
+        <div className="flex items-center gap-4">
+          <span className="h-5 w-5 rounded bg-zinc-300" />
+          <span className="h-5 w-5 rounded bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Close icon',
+      value: '20 × 20 px',
+      visual: (
+        <span className="inline-flex h-7 w-7 items-center justify-center text-black/80">
+          <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5">
+            <path
+              d="M5 5l10 10M15 5L5 15"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
+      ),
+    },
+    {
+      label: 'Animation',
+      value: '200ms · fade + scale 0.96 → 1',
+      visual: (
+        <div className="h-9 w-9 animate-pulse rounded-md bg-[#1770ee]/20" />
+      ),
+    },
+  ]}
+/>

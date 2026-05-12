@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 278 100% 41%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-secondary: 210 40% 96%;
+    --color-secondary-foreground: 222 47% 11%;
+    --color-accent: 210 40% 96%;
+    --color-accent-foreground: 222 47% 11%;
+    --color-destructive: 0 84% 60%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-background: 0 0% 100%;
+    --color-foreground: 222 47% 11%;
+    --color-muted: 210 40% 96%;
+    --color-muted-foreground: 215 16% 47%;
+    --color-border: 214 32% 91%;
+    --color-input: 214 32% 91%;
+    --color-ring: 222 84% 5%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: hsl(var(--color-border));
+  }
+
+  html {
+    font-family:
+      'Inter',
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+  }
+
+  body {
+    background-color: hsl(var(--color-background));
+    color: hsl(var(--color-foreground));
+  }
+}
+
+/* rehype-pretty-code output */
+[data-rehype-pretty-code-figure] pre {
+  background: transparent !important;
+  padding: 0;
+}
+
+[data-rehype-pretty-code-figure] code {
+  display: grid;
+  background: transparent !important;
+  counter-reset: line;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+[data-rehype-pretty-code-figure] code > [data-line] {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-left: 2px solid transparent;
+}
+
+[data-rehype-pretty-code-figure] code > [data-line].highlighted {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-left-color: #7e00d2;
+}
+
+[data-rehype-pretty-code-figure] code > [data-line] mark[data-highlighted-chars] {
+  background-color: rgba(126, 0, 210, 0.25);
+  border-radius: 0.125rem;
+  padding: 1px 2px;
+  color: inherit;
+}
+
+[data-rehype-pretty-code-title] {
+  display: none;
+}
+
+/* Landing page — infinite horizontal marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+/* Subtle dot grid background used on the landing hero */
+.bg-dot-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.08) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Animated gradient mesh used behind the hero headline */
+@keyframes mesh-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(20px, -20px, 0) scale(1.05);
+  }
+}
+.bg-mesh {
+  background:
+    radial-gradient(at 20% 30%, rgba(126, 0, 210, 0.18) 0%, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(23, 112, 238, 0.15) 0%, transparent 50%),
+    radial-gradient(at 60% 80%, rgba(58, 132, 236, 0.12) 0%, transparent 50%);
+  animation: mesh-drift 12s ease-in-out infinite;
+}

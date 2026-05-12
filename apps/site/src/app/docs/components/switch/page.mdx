@@ -1,0 +1,201 @@
+import { Switch } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SwitchAllVariants } from '@/components/demos/switch-demo';
+
+# Switch
+
+A two-state toggle. Sixteen documented variants in Figma — Large / Small × Default / Disabled × Off / On × with or without a check icon inside the thumb.
+
+Built on **Radix Switch** so ARIA roles, focus management, keyboard activation (Space), and form integration come for free. Pixel-perfect port of Figma node `2382:278`.
+
+## Installation
+
+<InstallCommand name="switch" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { Switch } from '@petpooja/ui';
+
+export function Demo() {
+  return <Switch defaultChecked />;
+}
+```
+
+## Variants
+
+Every combination from Figma — both sizes, both states, with and without the in-thumb check icon.
+
+<ComponentPreview
+  previewClassName="!min-h-[480px] !p-10"
+  preview={<SwitchAllVariants />}
+  code={`<Switch />
+<Switch defaultChecked />
+
+<Switch icon />
+<Switch icon defaultChecked />
+
+<Switch disabled />
+<Switch disabled defaultChecked />
+
+<Switch disabled icon />
+<Switch disabled icon defaultChecked />
+
+<Switch size="small" />
+<Switch size="small" defaultChecked />
+
+<Switch size="small" icon />
+<Switch size="small" icon defaultChecked />
+
+<Switch size="small" disabled />
+<Switch size="small" disabled defaultChecked />
+
+<Switch size="small" disabled icon />
+<Switch size="small" disabled icon defaultChecked />`}
+/>
+
+## API
+
+Extends every prop of [`@radix-ui/react-switch`'s Root](https://www.radix-ui.com/primitives/docs/components/switch#root).
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'large' | 'small'",
+      default: "'large'",
+      description: <><code>large</code> renders the 52×32 track (24×24 thumb). <code>small</code> renders the 44×24 track (16×16 thumb).</>,
+    },
+    {
+      name: 'icon',
+      type: 'boolean',
+      default: 'false',
+      description: <>Show the check icon inside the thumb when the switch is on. Matches the Figma <code>Icon=True</code> variant.</>,
+    },
+    {
+      name: 'checked',
+      type: 'boolean',
+      description: <>Controlled on/off state. Pair with <code>onCheckedChange</code>.</>,
+    },
+    {
+      name: 'defaultChecked',
+      type: 'boolean',
+      default: 'false',
+      description: 'Initial state when uncontrolled.',
+    },
+    {
+      name: 'onCheckedChange',
+      type: '(checked: boolean) => void',
+      description: 'Fires whenever the user toggles the switch.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Switches the track to the gray disabled palette and blocks interaction.',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      description: 'Form field name.',
+    },
+    {
+      name: 'value',
+      type: 'string',
+      default: "'on'",
+      description: 'Value submitted with the form when checked.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `2382:278` (Pantheon › Switch).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Track — Large',
+      value: '52 × 32 px',
+      figmaName: 'px-1 py-0.5',
+      visual: <div className="h-8 w-[52px] rounded-full bg-[#1770ee]" />,
+    },
+    {
+      label: 'Track — Small',
+      value: '44 × 24 px',
+      figmaName: 'p-1',
+      visual: <div className="h-6 w-11 rounded-full bg-[#1770ee]" />,
+    },
+    {
+      label: 'Thumb — Large',
+      value: '24 × 24 px',
+      visual: <div className="h-6 w-6 rounded-full bg-white shadow ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Thumb — Small',
+      value: '16 × 16 px',
+      visual: <div className="h-4 w-4 rounded-full bg-white shadow ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Track — Off enabled',
+      value: '#c9c9c9',
+      figmaName: '#f0f0f0 + 16% black',
+      visual: <div className="h-7 w-12 rounded-full bg-[#c9c9c9]" />,
+    },
+    {
+      label: 'Track — On enabled',
+      value: '#1770ee',
+      figmaName: 'buttons/primary',
+      visual: <div className="h-7 w-12 rounded-full bg-[#1770ee]" />,
+    },
+    {
+      label: 'Track — Disabled',
+      value: '#dddddd',
+      figmaName: '#f0f0f0 + 8% black',
+      visual: <div className="h-7 w-12 rounded-full bg-[#dddddd]" />,
+    },
+    {
+      label: 'Thumb fill',
+      value: 'white',
+      visual: <div className="h-7 w-7 rounded-full bg-white ring-1 ring-inset ring-border" />,
+    },
+    {
+      label: 'Check icon',
+      value: '#1770ee · 2px stroke',
+      figmaName: 'Icon variant',
+      visual: (
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-border">
+          <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4 text-[#1770ee]">
+            <path
+              d="M3 8.5l3 3 7-7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      ),
+    },
+    {
+      label: 'Thumb translate',
+      value: '20 px',
+      figmaName: 'on state',
+      visual: (
+        <div className="flex items-center gap-1">
+          <span className="h-4 w-4 rounded-full bg-zinc-300" />
+          <span className="text-[10px] text-muted-foreground">→</span>
+          <span className="h-4 w-4 rounded-full bg-[#1770ee]" />
+        </div>
+      ),
+    },
+  ]}
+/>

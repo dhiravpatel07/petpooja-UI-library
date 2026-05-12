@@ -1,0 +1,215 @@
+import { Search } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { SearchStatesDemo, SearchControlledDemo } from '@/components/demos/search-demo';
+
+# Search
+
+A single-line input with a magnifying-glass icon on the left and an auto-revealing clear (×) button on the right. The clear button appears as soon as the input has a value, and pressing it empties the input and returns focus there — the standard search-clear pattern.
+
+Pixel-perfect port of Figma node `5376:906`. Composes well with any list-filtering UI.
+
+## Installation
+
+<InstallCommand name="search" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { Search } from '@petpooja/ui';
+
+export function Demo() {
+  return <Search placeholder="Search menu" />;
+}
+```
+
+## States
+
+The clear button reveals automatically once the input has content. Disabled state dims the whole control and suppresses the clear button.
+
+<ComponentPreview
+  previewClassName="!min-h-[340px] !p-8"
+  preview={<SearchStatesDemo />}
+  code={`<Search />
+
+<Search defaultValue="cheese pizza" />
+
+<Search defaultValue="cheese pizza" disabled />`}
+/>
+
+## Controlled (live filter)
+
+Drive the value from React state with `value` + `onChange`. The clear button still works for controlled inputs — it dispatches a native `input` event so your `onChange` handler sees the cleared value.
+
+<ComponentPreview
+  previewClassName="!min-h-[420px] !p-8"
+  preview={<SearchControlledDemo />}
+  code={`'use client';
+import { useState } from 'react';
+import { Search } from '@petpooja/ui';
+
+const ITEMS = ['Margherita pizza', 'Pepperoni pizza', 'Mushroom risotto', /* … */];
+
+export function Demo() {
+  const [query, setQuery] = useState('');
+  const filtered = query
+    ? ITEMS.filter((i) => i.toLowerCase().includes(query.toLowerCase()))
+    : ITEMS;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Search
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search menu items"
+      />
+      <ul>
+        {filtered.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}`}
+/>
+
+## API
+
+Extends every standard `<input>` prop (`type` is locked to `"search"`).
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      description: <>Controlled value. Pair with <code>onChange</code>.</>,
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Initial value when uncontrolled.',
+    },
+    {
+      name: 'onChange',
+      type: '(event: ChangeEvent<HTMLInputElement>) => void',
+      description: <>Standard input change handler. Fires on typing AND on the clear button press (the clear dispatches a native <code>input</code> event with value <code>""</code>).</>,
+    },
+    {
+      name: 'onClear',
+      type: '() => void',
+      description: <>Optional. Fires <em>after</em> the clear button press completes — useful for analytics or focus restoration on a related element.</>,
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      default: "'Search'",
+      description: 'Placeholder shown when the input is empty.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Dims the whole control and suppresses the clear button.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: <>Merged onto the outer container via <code>tailwind-merge</code>. Use to constrain width, change border, etc.</>,
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `5376:906` (Pantheon › Search).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Container height',
+      value: '32 px',
+      figmaName: 'h-8',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center">
+          <div className="flex h-8 w-9 items-center justify-center rounded-[8px] border border-[#e5e5e5] bg-white">
+            <span className="text-[10px] text-black/60">Aa</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: 'Corner radius',
+      value: '8 px',
+      figmaName: 'square/small',
+      visual: <div className="h-9 w-9 rounded-[8px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Border',
+      value: '1px · #e5e5e5',
+      figmaName: 'border/primary',
+      visual: <div className="h-9 w-9 rounded-[8px] border border-[#e5e5e5] bg-background" />,
+    },
+    {
+      label: 'Horizontal padding',
+      value: '16 px',
+      figmaName: 'px-4',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-md border border-dashed border-[#7e00d2]/40 bg-[#7e00d2]/5 text-[10px] font-medium text-[#7e00d2]">
+          16
+        </div>
+      ),
+    },
+    {
+      label: 'Icon size',
+      value: '16 × 16 px',
+      visual: (
+        <span className="inline-flex h-7 w-7 items-center justify-center text-black/60">
+          <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
+            <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+            <path
+              d="M10.5 10.5l3 3"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
+      ),
+    },
+    {
+      label: 'Icon ↔ input gap',
+      value: '8 px',
+      visual: (
+        <div className="flex items-center gap-2">
+          <span className="h-4 w-4 rounded-full bg-zinc-300" />
+          <span className="h-4 w-12 rounded bg-zinc-300" />
+        </div>
+      ),
+    },
+    {
+      label: 'Text',
+      value: 'Inter Regular 14 / 22',
+      figmaName: 'Body Medium',
+      visual: <span className="text-[14px] font-normal leading-[22px]">Aa</span>,
+    },
+    {
+      label: 'Placeholder colour',
+      value: 'rgb(0 0 0 / 60%)',
+      figmaName: 'text/primary',
+      visual: <span className="text-[14px] leading-[22px] text-black/60">Aa</span>,
+    },
+    {
+      label: 'Focus border',
+      value: 'foreground / 40%',
+      figmaName: 'focus-within',
+      visual: <div className="h-7 w-7 rounded-[8px] border border-foreground/40 bg-background" />,
+    },
+  ]}
+/>

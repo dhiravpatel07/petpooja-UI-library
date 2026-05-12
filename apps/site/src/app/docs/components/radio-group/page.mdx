@@ -1,0 +1,225 @@
+import { RadioGroup, RadioGroupItem } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import { RadioGroupAllStates } from '@/components/demos/radio-group-demo';
+
+# Radio Group
+
+A single-select group of radio buttons. Use when the user must pick exactly one option from a small list.
+
+Built on **Radix RadioGroup** so ARIA roles, focus management, arrow-key navigation between items, and form integration come for free. Pixel-perfect port of Figma node `2381:1299`.
+
+## Installation
+
+<InstallCommand name="radio-group" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <RadioGroup defaultValue="email">
+      <label className="flex items-center gap-3">
+        <RadioGroupItem value="email" id="email" />
+        <span>Email</span>
+      </label>
+      <label className="flex items-center gap-3">
+        <RadioGroupItem value="sms" id="sms" />
+        <span>SMS</span>
+      </label>
+    </RadioGroup>
+  );
+}
+```
+
+## States
+
+All four documented combinations from Figma.
+
+<ComponentPreview
+  previewClassName="!min-h-[220px] !p-10"
+  preview={<RadioGroupAllStates />}
+  code={`<RadioGroup>
+  <RadioGroupItem value="a" />
+</RadioGroup>
+
+<RadioGroup defaultValue="a">
+  <RadioGroupItem value="a" />
+</RadioGroup>
+
+<RadioGroup>
+  <RadioGroupItem value="a" disabled />
+</RadioGroup>
+
+<RadioGroup defaultValue="a">
+  <RadioGroupItem value="a" disabled />
+</RadioGroup>`}
+/>
+
+## API
+
+### `RadioGroup`
+
+Wraps Radix `RadioGroup.Root` — controls which value is selected.
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      description: <>Controlled selected value. Pair with <code>onValueChange</code>.</>,
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Initial selected value when uncontrolled.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Fires whenever the user selects a different item.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables every item in the group.',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      description: 'Form field name. Submitted with the form using the selected value.',
+    },
+    {
+      name: 'required',
+      type: 'boolean',
+      default: 'false',
+      description: 'Requires a selection before form submit.',
+    },
+    {
+      name: 'orientation',
+      type: "'horizontal' | 'vertical'",
+      default: "'vertical'",
+      description: 'Used by the arrow-key handler to determine which arrows move focus.',
+    },
+  ]}
+/>
+
+### `RadioGroupItem`
+
+Each individual radio button.
+
+<PropsTable
+  rows={[
+    {
+      name: 'value',
+      type: 'string',
+      required: true,
+      description: 'The value this item represents when selected.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables this single item (gray border + indicator if it was selected).',
+    },
+    {
+      name: 'required',
+      type: 'boolean',
+      default: 'false',
+      description: 'When inside a form, requires selecting at least this item.',
+    },
+    {
+      name: 'id',
+      type: 'string',
+      description: <>Pair with a <code>&lt;label htmlFor&gt;</code> so the label click toggles the item.</>,
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `2381:1299` (Pantheon › Radio Buttons).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Hit area',
+      value: '24 × 24 px',
+      figmaName: 'Material icon frame',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center">
+          <div className="flex h-6 w-6 items-center justify-center rounded-sm bg-zinc-100 ring-1 ring-inset ring-border">
+            <div className="h-[19px] w-[19px] rounded-full border-2 border-black bg-white" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: 'Visible circle',
+      value: '19 × 19 px',
+      figmaName: 'inset 10.42%',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center">
+          <div className="h-[19px] w-[19px] rounded-full border-2 border-black bg-white" />
+        </div>
+      ),
+    },
+    {
+      label: 'Indicator dot',
+      value: '9 × 9 px',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center">
+          <div className="flex h-[19px] w-[19px] items-center justify-center rounded-full border-2 border-[#1770ee] bg-white">
+            <div className="h-[9px] w-[9px] rounded-full bg-[#1770ee]" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: 'Border (Enabled)',
+      value: '2px · #000000',
+      figmaName: 'unselected',
+      visual: <div className="h-7 w-7 rounded-full border-2 border-black bg-white" />,
+    },
+    {
+      label: 'Border (Disabled)',
+      value: '2px · #cccccc',
+      visual: <div className="h-7 w-7 rounded-full border-2 border-[#cccccc] bg-white" />,
+    },
+    {
+      label: 'Selected — Enabled',
+      value: '#1770ee',
+      figmaName: 'buttons/primary',
+      visual: (
+        <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1770ee] bg-white">
+          <div className="h-[8px] w-[8px] rounded-full bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Selected — Disabled',
+      value: '#cccccc',
+      visual: (
+        <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#cccccc] bg-white">
+          <div className="h-[8px] w-[8px] rounded-full bg-[#cccccc]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Label font',
+      value: 'Inter 16 px',
+      figmaName: 'paired text',
+      visual: <span className="text-[16px] font-medium leading-6">Aa</span>,
+    },
+  ]}
+/>

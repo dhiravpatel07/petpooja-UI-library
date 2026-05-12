@@ -1,0 +1,134 @@
+# Installation
+
+Petpooja UI ships in two flavours. Pick whichever fits your project.
+
+- **npm package** — fastest to set up. Version-locked. You can't edit component source without forking.
+- **Copy-paste (shadcn CLI)** — full source lands in your repo. You own and customise it. Slightly more setup.
+
+You can mix both: install the npm package, then later copy individual components in to customise.
+
+## Prerequisites
+
+You'll need a React project (Next.js, Vite, Remix — any will do) with:
+
+- React 18+
+- Tailwind CSS 3+
+- TypeScript (recommended)
+
+If you don't have Tailwind yet, follow [tailwindcss.com/docs/installation](https://tailwindcss.com/docs/installation) first.
+
+## Tailwind setup
+
+Add the Petpooja preset and content paths to your `tailwind.config.ts`:
+
+```ts
+import type { Config } from 'tailwindcss';
+import petpoojaPreset from '@petpooja/ui/tailwind-preset';
+
+export default {
+  presets: [petpoojaPreset],
+  content: [
+    './src/**/*.{ts,tsx}',
+    // If you copy-pasted components into ./components/ui, include that path too.
+    './components/**/*.{ts,tsx}',
+  ],
+} satisfies Config;
+```
+
+## CSS variables
+
+Add the design-token CSS variables to your global stylesheet (`globals.css`, `index.css`, etc.):
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 278 100% 41%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-background: 0 0% 100%;
+    --color-foreground: 222 47% 11%;
+    --color-muted: 210 40% 96%;
+    --color-muted-foreground: 215 16% 47%;
+    --color-border: 214 32% 91%;
+    --color-accent: 210 40% 96%;
+    --color-accent-foreground: 222 47% 11%;
+    --color-ring: 222 84% 5%;
+    --radius: 0.5rem;
+  }
+}
+```
+
+## Option A: npm package <a id="npm-package" />
+
+```bash
+pnpm add @petpooja/ui
+```
+
+Import the global stylesheet once in your app entry (only required if you're using the pre-built CSS — most projects can skip this since Tailwind already picks up the preset):
+
+```ts
+import '@petpooja/ui/styles.css';
+```
+
+Then use components:
+
+```tsx
+import { Badge } from '@petpooja/ui';
+
+export function Demo() {
+  return <Badge size="large">New</Badge>;
+}
+```
+
+## Option B: Copy-paste with shadcn CLI <a id="copy-paste" />
+
+First, initialise shadcn in your project (only needed once):
+
+```bash
+pnpm dlx shadcn@latest init
+```
+
+This creates a `components.json` describing where copy-pasted components should land. The defaults work for most setups:
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.ts",
+    "css": "src/app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  }
+}
+```
+
+Then add a Petpooja component by registry URL:
+
+<InstallCommand name="badge" />
+
+The CLI will:
+
+1. Fetch the registry JSON
+2. Write `lib/utils.ts` (the `cn` helper, if you don't already have it)
+3. Write `components/ui/badge.tsx`
+4. Install npm deps (`class-variance-authority`)
+
+Open the file, edit anything you want. It's yours now.
+
+## What's next?
+
+- [Browse components](/docs/components/badge) — start with Badge
+- [CLI reference](/docs/cli) — every command and flag for the copy-paste workflow

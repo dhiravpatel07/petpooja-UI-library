@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/lib/*": ["src/registry/lib/*"],
+      "@/components/ui/*": ["src/registry/ui/*"],
+      "@/registry/*": ["src/registry/*"]
     },
     "types": ["vitest/globals", "node"]
   },
