@@ -4,6 +4,7 @@
 // registry (compiled into JSON by scripts/build-registry.ts).
 export * from '@/components/ui/badge';
 export * from '@/components/ui/bottom-sheet';
+export * from '@/components/ui/button';
 export * from '@/components/ui/calendar';
 export * from '@/components/ui/card';
 export * from '@/components/ui/checkbox';

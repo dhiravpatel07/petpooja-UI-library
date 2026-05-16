@@ -49,6 +49,16 @@ const REGISTRY_ITEMS = [
     registryDependencies: ['utils'],
   },
   {
+    name: 'button',
+    type: 'registry:ui',
+    title: 'Button',
+    description:
+      'Action trigger with four visual variants (Primary / Tonal / Outline / Text), two shapes (Square / Round), four sizes (xs / sm / md / lg), leading & trailing icon slots, and an Icon-Only mode. Pressed maps to the native :active state; Disabled is the standard gray palette. Pixel-perfect port of Figma node 36:1881 (Pantheon › Buttons).',
+    files: [{ source: 'ui/button.tsx', target: 'components/ui/button.tsx', type: 'registry:ui' }],
+    dependencies: ['class-variance-authority'],
+    registryDependencies: ['utils'],
+  },
+  {
     name: 'card',
     type: 'registry:ui',
     title: 'Card',

@@ -27,6 +27,7 @@ const NAV: NavSection[] = [
     items: [
       { title: 'Badge', href: '/docs/components/badge' },
       { title: 'Bottom Sheet', href: '/docs/components/bottom-sheet' },
+      { title: 'Button', href: '/docs/components/button' },
       { title: 'Card', href: '/docs/components/card' },
       { title: 'Checkbox', href: '/docs/components/checkbox' },
       { title: 'Date Picker', href: '/docs/components/date-picker' },

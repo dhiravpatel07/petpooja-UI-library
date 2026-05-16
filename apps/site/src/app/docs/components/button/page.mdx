@@ -1,0 +1,297 @@
+import { Button } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  ButtonAllVariants,
+  ButtonIconPlacement,
+  ButtonStates,
+  ButtonIconOnly,
+} from '@/components/demos/button-demo';
+
+# Button
+
+The primary action trigger. One component covers every documented Pantheon variant — four visual styles, two shapes, four sizes, optional leading/trailing icons, and a square icon-only mode.
+
+Pressed maps to the native `:active` state; disabled uses the standard gray palette and blocks pointer events. Pixel-perfect port of Figma node `36:1881` (Pantheon › Buttons).
+
+## Installation
+
+<InstallCommand name="button" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { Button } from '@petpooja/ui';
+
+export function Demo() {
+  return <Button>Save changes</Button>;
+}
+```
+
+## Variants
+
+Four visual treatments cover almost every action UI: solid **Primary** for the page's main action, tinted **Tonal** for a softer brand emphasis, neutral **Outline** for secondary actions, and ghost **Text** for low-emphasis or inline use.
+
+<ComponentPreview
+  previewClassName="!min-h-[640px] !p-8"
+  preview={<ButtonAllVariants />}
+  code={`<Button variant="primary">Label</Button>
+<Button variant="tonal">Label</Button>
+<Button variant="outline">Label</Button>
+<Button variant="text">Label</Button>`}
+/>
+
+## Icon placement
+
+Pass any React node to `leadingIcon` / `trailingIcon`. Inline SVGs are auto-sized per `size` (18 / 18 / 20 / 24 px), so you don't need to size them yourself.
+
+<ComponentPreview
+  previewClassName="!min-h-[140px] !p-8"
+  preview={<ButtonIconPlacement />}
+  code={`<Button>Label</Button>
+<Button leadingIcon={<PlayIcon />}>Label</Button>
+<Button trailingIcon={<ArrowRightIcon />}>Label</Button>
+<Button shape="round" leadingIcon={<PlayIcon />} trailingIcon={<ArrowRightIcon />}>
+  Label
+</Button>`}
+/>
+
+## States
+
+The Pressed state is rendered while a pointer or key is active on the button — there's no separate prop. Disabled is the standard `disabled` attribute.
+
+<ComponentPreview
+  previewClassName="!min-h-[260px] !p-8"
+  preview={<ButtonStates />}
+  code={`<Button>Primary</Button>
+<Button disabled>Primary</Button>
+
+<Button variant="tonal">Tonal</Button>
+<Button variant="tonal" disabled>Tonal</Button>
+
+<Button variant="outline">Outline</Button>
+<Button variant="outline" disabled>Outline</Button>
+
+<Button variant="text">Text</Button>
+<Button variant="text" disabled>Text</Button>`}
+/>
+
+## Icon-only
+
+Set `iconOnly` to render a perfect square (32 / 36 / 40 / 48 px) with the icon centered and no minimum width. Pair it with `aria-label` for screen readers since there's no text content.
+
+<ComponentPreview
+  previewClassName="!min-h-[220px] !p-8"
+  preview={<ButtonIconOnly />}
+  code={`<Button iconOnly aria-label="Add">
+  <PlusIcon />
+</Button>
+
+<Button shape="round" iconOnly aria-label="Add">
+  <PlusIcon />
+</Button>`}
+/>
+
+## API
+
+Extends every standard `<button>` attribute (`onClick`, `disabled`, `form`, `name`, etc.).
+
+<PropsTable
+  rows={[
+    {
+      name: 'variant',
+      type: "'primary' | 'tonal' | 'outline' | 'text'",
+      default: "'primary'",
+      description: 'Visual treatment. Maps to the four Pantheon button frames.',
+    },
+    {
+      name: 'shape',
+      type: "'square' | 'round'",
+      default: "'square'",
+      description: (
+        <>
+          <code>square</code> uses a size-aware corner radius (8 / 10 / 10 / 12&nbsp;px).{' '}
+          <code>round</code> is a 200&nbsp;px pill.
+        </>
+      ),
+    },
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Height (32 / 36 / 40 / 48 px) plus matching font and icon size.',
+    },
+    {
+      name: 'leadingIcon',
+      type: 'ReactNode',
+      description: 'Rendered before children. Ignored when iconOnly.',
+    },
+    {
+      name: 'trailingIcon',
+      type: 'ReactNode',
+      description: 'Rendered after children. Ignored when iconOnly.',
+    },
+    {
+      name: 'iconOnly',
+      type: 'boolean',
+      default: 'false',
+      description: (
+        <>
+          Renders a square icon button. <code>children</code> is the icon. Always pair with{' '}
+          <code>aria-label</code>.
+        </>
+      ),
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Standard native disabled state — gray palette and pointer-events: none.',
+    },
+    {
+      name: 'type',
+      type: "'button' | 'submit' | 'reset'",
+      default: "'button'",
+      description: 'Native button type. Defaults to button to avoid accidental form submits.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `36:1881` (Pantheon › Buttons).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Heights (xs / sm / md / lg)',
+      value: '32 / 36 / 40 / 48 px',
+      visual: (
+        <div className="flex items-end gap-2">
+          <div className="h-8 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-9 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-10 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-12 w-2 rounded-sm bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Square radius',
+      value: '8 / 10 / 10 / 12 px',
+      figmaName: 'square/small · medium · large',
+      visual: (
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-[8px] border-2 border-foreground/30 bg-background" />
+          <div className="h-7 w-7 rounded-[10px] border-2 border-foreground/30 bg-background" />
+          <div className="h-7 w-7 rounded-[12px] border-2 border-foreground/30 bg-background" />
+        </div>
+      ),
+    },
+    {
+      label: 'Round radius',
+      value: '200 px (full pill)',
+      figmaName: 'round/rounded',
+      visual: <div className="h-7 w-12 rounded-[200px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Primary — Enabled',
+      value: '#1770ee',
+      figmaName: 'buttons/primary',
+      visual: <div className="h-9 w-9 rounded-md bg-[#1770ee]" />,
+    },
+    {
+      label: 'Primary — Pressed',
+      value: '#125abe',
+      figmaName: 'buttons/primary-pressed',
+      visual: <div className="h-9 w-9 rounded-md bg-[#125abe]" />,
+    },
+    {
+      label: 'Tonal — Enabled',
+      value: '#e8f1fd · text #1770ee · 1px brand border',
+      figmaName: 'buttons/tonal',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-[#1770ee] bg-[#e8f1fd] text-[10px] font-medium text-[#1770ee]">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Tonal — Pressed',
+      value: '#d1e2fc',
+      figmaName: 'buttons/tonal-pressed',
+      visual: <div className="h-9 w-9 rounded-md border border-[#1770ee] bg-[#d1e2fc]" />,
+    },
+    {
+      label: 'Outline — Enabled',
+      value: 'white · 1px #e5e5e5 border · text #000',
+      figmaName: 'buttons/tertiary',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-[#e5e5e5] bg-white text-[10px] font-medium text-black">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Outline — Pressed',
+      value: '#fafafa',
+      figmaName: 'surface/secondary',
+      visual: <div className="h-9 w-9 rounded-md border border-[#e5e5e5] bg-[#fafafa]" />,
+    },
+    {
+      label: 'Disabled',
+      value: 'bg #f5f5f5 · text #999 · border #ccc',
+      figmaName: 'buttons/disabled · text/disabled · border/disabled',
+      visual: (
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-[#cccccc] bg-[#f5f5f5] text-[10px] font-medium text-[#999999]">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Padding',
+      value: 'px-4 (16 px) · gap-2 (8 px)',
+      visual: (
+        <div className="flex items-center gap-2">
+          <span className="h-5 w-2 rounded-sm bg-[#1770ee]/30" />
+          <span className="text-[12px] font-medium text-foreground">Label</span>
+          <span className="h-5 w-2 rounded-sm bg-[#1770ee]/30" />
+        </div>
+      ),
+    },
+    {
+      label: 'Label font',
+      value: 'Inter Medium · 14/22 (xs/sm/md) · 16/24 (lg)',
+      figmaName: 'title-small · body-large',
+      visual: <span className="text-[16px] font-medium leading-6">Aa</span>,
+    },
+    {
+      label: 'Icon size',
+      value: '18 / 18 / 20 / 24 px',
+      visual: (
+        <div className="flex items-end gap-2 text-[#1770ee]">
+          <svg viewBox="0 0 24 24" className="size-[18px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <svg viewBox="0 0 24 24" className="size-[20px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <svg viewBox="0 0 24 24" className="size-[24px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+        </div>
+      ),
+    },
+    {
+      label: 'Min width (Primary / Tonal labels)',
+      value: '88 px',
+      visual: <div className="h-7 w-[88px] rounded-md bg-[#1770ee]" />,
+    },
+  ]}
+/>
