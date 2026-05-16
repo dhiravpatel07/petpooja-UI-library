@@ -1,0 +1,313 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  TextRampDemo,
+  TextWeightsDemo,
+  TextColorsDemo,
+  TextTruncateDemo,
+  TextPolymorphicDemo,
+} from '@/components/demos/text-demo';
+
+# Text
+
+Polymorphic typography primitive that ports the full Pantheon ramp — twelve tiers (Display / Title / Body / Label, each in Large / Medium / Small) × four weights (Regular / Medium / SemiBold / Bold) — into a single component driven by `variant`, `size`, and `weight`.
+
+Pixel-perfect port of Figma node `66:686` (Pantheon › Typography). Convenience aliases — `<Display>`, `<Title>`, `<Body>`, `<Label>` — lock the variant for cleaner call-sites; the underlying `<Text>` exposes everything else (semantic colour, alignment, truncation, multi-line clamp, italic / underline / strikethrough, and an `as` prop for the rendered element).
+
+## Installation
+
+<InstallCommand name="text" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { Text, Display, Title, Body, Label } from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <article>
+      <Display size="md" as="h1">Welcome back</Display>
+      <Title size="md" color="secondary">Western region · today</Title>
+      <Body>Service ran without incident.</Body>
+      <Label>Updated 2 min ago</Label>
+    </article>
+  );
+}
+```
+
+## The ramp
+
+Twelve tiers · 48 total styles with weights. Default weight for every tier is Regular, except `label`, which defaults to Medium per the Pantheon spec.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextRampDemo />}
+  code={`<Text variant="display" size="lg">Display Large</Text>
+<Text variant="display" size="md">Display Medium</Text>
+<Text variant="display" size="sm">Display Small</Text>
+<Text variant="title"   size="lg">Title Large</Text>
+<Text variant="title"   size="md">Title Medium</Text>
+<Text variant="title"   size="sm">Title Small</Text>
+<Text variant="body"    size="lg">Body Large</Text>
+<Text variant="body"    size="md">Body Medium</Text>
+<Text variant="body"    size="sm">Body Small</Text>
+<Text variant="label"   size="lg">Label Large</Text>
+<Text variant="label"   size="md">Label Medium</Text>
+<Text variant="label"   size="sm">Label Small</Text>`}
+/>
+
+## Weights
+
+Pass `weight` to override the default per tier — `regular` (400), `medium` (500), `semibold` (600), `bold` (700).
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextWeightsDemo />}
+  code={`<Text variant="title" size="md" weight="regular">…</Text>
+<Text variant="title" size="md" weight="medium">…</Text>
+<Text variant="title" size="md" weight="semibold">…</Text>
+<Text variant="title" size="md" weight="bold">…</Text>`}
+/>
+
+## Semantic colours
+
+The `color` prop maps to the Pantheon `Text/*` palette so call-sites stay free of raw hex values. Override with `className` when you need a one-off.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextColorsDemo />}
+  code={`<Text color="primary">…</Text>     {/* #000000 */}
+<Text color="secondary">…</Text>   {/* #666666 */}
+<Text color="tertiary">…</Text>    {/* #999999 */}
+<Text color="disabled">…</Text>    {/* #CCCCCC */}
+<Text color="brand">…</Text>       {/* #1770EE */}
+<Text color="success">…</Text>     {/* #1E7E34 */}
+<Text color="warning">…</Text>     {/* #A35E00 */}
+<Text color="danger">…</Text>      {/* #D03A3A */}
+<Text color="inverse">…</Text>     {/* #FFFFFF — for dark surfaces */}`}
+/>
+
+## Truncation + clamp
+
+`truncate` collapses to one line with an ellipsis. `numLines` clamps to N lines via `-webkit-line-clamp` — `numLines` wins when both are set.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextTruncateDemo />}
+  code={`<Body truncate>…</Body>          {/* one line + ellipsis */}
+<Body numLines={2}>…</Body>      {/* two-line clamp */}
+<Body numLines={3}>…</Body>      {/* three-line clamp */}`}
+/>
+
+## Polymorphic `as`
+
+Every component is polymorphic — pass `as` to swap the rendered element. Default tags are picked per variant + size so the document still reads as a sensible outline (Display → `<h1>`, Title large → `<h2>`, etc.).
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextPolymorphicDemo />}
+  code={`<Display size="md" as="h1">Daily kitchen report</Display>
+<Title   size="md" as="h2" color="secondary">Western region · 16 May</Title>
+<Body>
+  Service ran without incident — SLA was met on
+  {' '}<Text as="a" href="#" color="brand" underline>every dispatch lane</Text>.
+</Body>
+<Body color="secondary">
+  Note: maintenance starts at <Text as="time" weight="semibold">02:00</Text> tomorrow.
+</Body>`}
+/>
+
+## API
+
+### `Text`
+
+The polymorphic primitive. Accepts every prop below plus the native attributes of the rendered element (forwarded via the `as` prop).
+
+<PropsTable
+  rows={[
+    {
+      name: 'variant',
+      type: '"display" | "title" | "body" | "label"',
+      default: '"body"',
+      description: 'Type tier. Picks the size/line-height ramp and the default rendered element.',
+    },
+    {
+      name: 'size',
+      type: '"lg" | "md" | "sm"',
+      default: '"md"',
+      description: 'Step within the variant ramp.',
+    },
+    {
+      name: 'weight',
+      type: '"regular" | "medium" | "semibold" | "bold"',
+      description: 'Font weight. Defaults to `regular` for display/title/body and `medium` for label.',
+    },
+    {
+      name: 'color',
+      type: '"primary" | "secondary" | "tertiary" | "disabled" | "brand" | "success" | "warning" | "danger" | "inverse"',
+      description: 'Semantic colour token from the Pantheon Text palette.',
+    },
+    {
+      name: 'align',
+      type: '"left" | "center" | "right" | "justify"',
+      description: 'Text-align shorthand.',
+    },
+    {
+      name: 'truncate',
+      type: 'boolean',
+      description: 'Collapse to a single line with an ellipsis.',
+    },
+    {
+      name: 'numLines',
+      type: 'number',
+      description: 'Multi-line clamp via `-webkit-line-clamp`. Wins over `truncate`.',
+    },
+    {
+      name: 'italic',
+      type: 'boolean',
+      description: 'Italicise the text.',
+    },
+    {
+      name: 'underline',
+      type: 'boolean',
+      description: 'Add an underline (with 2 px offset).',
+    },
+    {
+      name: 'strikethrough',
+      type: 'boolean',
+      description: 'Strike through the text.',
+    },
+    {
+      name: 'inheritSize',
+      type: 'boolean',
+      description: 'Skip the variant size + line-height so the parent context drives sizing. Useful when nesting `<Text>` for decoration inside another `<Text>` (e.g. emphasising a span without changing the leading).',
+    },
+    {
+      name: 'as',
+      type: 'ElementType',
+      description: 'Rendered element. Defaults: display → `h1`, title → `h2`/`h3`/`h4`, body → `p`, label → `span`.',
+    },
+  ]}
+/>
+
+### `Display` · `Title` · `Body` · `Label`
+
+Thin wrappers around `<Text>` that lock `variant`. Every other prop is forwarded.
+
+```tsx
+<Display size="lg">Hero copy</Display>          // variant="display"
+<Title size="md">Section header</Title>          // variant="title"
+<Body>Paragraph copy.</Body>                     // variant="body" (default size md)
+<Label color="secondary">Caption</Label>         // variant="label"
+```
+
+### `TYPOGRAPHY_TOKENS`
+
+The raw ramp as a plain object — useful for design-token tables, Storybook stories, or generating CSS variables.
+
+```ts
+import { TYPOGRAPHY_TOKENS } from '@petpooja/ui';
+
+TYPOGRAPHY_TOKENS.title.lg;
+// → { fontSize: 20, lineHeight: 26, defaultWeight: 'regular' }
+```
+
+## Design tokens
+
+Specs from Figma node `66:686` (Pantheon › Typography).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Display / Large',
+      value: 'Inter Regular · 32 / 40',
+      figmaName: 'Display/Large',
+      visual: <span className="text-[32px] leading-[40px] text-black">Aa</span>,
+    },
+    {
+      label: 'Display / Medium',
+      value: 'Inter Regular · 24 / 32',
+      figmaName: 'Display/Medium',
+      visual: <span className="text-[24px] leading-[32px] text-black">Aa</span>,
+    },
+    {
+      label: 'Display / Small',
+      value: 'Inter Regular · 20 / 28',
+      figmaName: 'Display/Small',
+      visual: <span className="text-[20px] leading-[28px] text-black">Aa</span>,
+    },
+    {
+      label: 'Title / Large',
+      value: 'Inter Regular · 20 / 26',
+      figmaName: 'Title/Large',
+      visual: <span className="text-[20px] leading-[26px] text-black">Aa</span>,
+    },
+    {
+      label: 'Title / Medium',
+      value: 'Inter Regular · 18 / 24',
+      figmaName: 'Title/Medium',
+      visual: <span className="text-[18px] leading-[24px] text-black">Aa</span>,
+    },
+    {
+      label: 'Title / Small',
+      value: 'Inter Regular · 16 / 22',
+      figmaName: 'Title/Small',
+      visual: <span className="text-[16px] leading-[22px] text-black">Aa</span>,
+    },
+    {
+      label: 'Body / Large',
+      value: 'Inter Regular · 16 / 24',
+      figmaName: 'Body/Large',
+      visual: <span className="text-[16px] leading-[24px] text-black">Aa</span>,
+    },
+    {
+      label: 'Body / Medium',
+      value: 'Inter Regular · 14 / 22',
+      figmaName: 'Body/Medium',
+      visual: <span className="text-[14px] leading-[22px] text-black">Aa</span>,
+    },
+    {
+      label: 'Body / Small',
+      value: 'Inter Regular · 12 / 20',
+      figmaName: 'Body/Small',
+      visual: <span className="text-[12px] leading-[20px] text-black">Aa</span>,
+    },
+    {
+      label: 'Label / Large',
+      value: 'Inter Medium · 14 / 22',
+      figmaName: 'Label/Large',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-black">Aa</span>,
+    },
+    {
+      label: 'Label / Medium',
+      value: 'Inter Medium · 12 / 20',
+      figmaName: 'Label/Medium',
+      visual: <span className="text-[12px] font-medium leading-[20px] text-black">Aa</span>,
+    },
+    {
+      label: 'Label / Small',
+      value: 'Inter Medium · 10 / 18',
+      figmaName: 'Label/Small',
+      visual: <span className="text-[10px] font-medium leading-[18px] text-black">Aa</span>,
+    },
+    {
+      label: 'Weights',
+      value: 'Regular 400 · Medium 500 · SemiBold 600 · Bold 700',
+      visual: (
+        <span className="text-[14px] text-black">
+          <span className="font-normal">A</span>
+          <span className="font-medium">a</span>
+          <span className="font-semibold">A</span>
+          <span className="font-bold">a</span>
+        </span>
+      ),
+    },
+  ]}
+/>

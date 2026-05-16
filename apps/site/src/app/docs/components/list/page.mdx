@@ -1,0 +1,295 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  ListTextVariantsDemo,
+  ListLeadingDemo,
+  ListTrailingDemo,
+  ListThreeLineImageDemo,
+  ListInteractiveDemo,
+  ListDividerDemo,
+} from '@/components/demos/list-demo';
+
+# List
+
+Slot-based list row primitive that powers settings screens, navigation lists, selection menus, and feed cards. Six leading shapes (none / icon / image / checkbox / radio / switch) × five trailing shapes (none / icon / checkbox / radio / switch) × three text variants (Title only / Label + Title / Label + Title + Description) — every combination from the Pantheon spec is expressible.
+
+Pixel-perfect port of Figma node `3461:3` (Pantheon › List). Each row is `Surface/Primary` with 16&nbsp;px horizontal and 8&nbsp;px vertical padding; the leading slot auto-aligns to the top when a description is present and a leading element exists, matching Figma's 3-line + image rule.
+
+## Installation
+
+<InstallCommand name="list" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<List>
+  <ListItem
+    leading={<ListAvatar src="..." />}
+    label="Label"
+    title="Title"
+    description="Supporting text"
+    trailing={<Switch />}
+  />
+</List>
+```
+
+Or use the slots directly when you need full control:
+
+```tsx
+<ListItem>
+  <ListItemLeading>{leading}</ListItemLeading>
+  <ListItemContent>
+    <ListItemLabel>Label</ListItemLabel>
+    <ListItemTitle>Title</ListItemTitle>
+    <ListItemDescription>Description</ListItemDescription>
+  </ListItemContent>
+  <ListItemTrailing>{trailing}</ListItemTrailing>
+</ListItem>
+```
+
+## Text variants
+
+Pass any combination of `label`, `title`, and `description`. Label sits above the title in Inter SemiBold 12/20 `#666`; Description sits below in Inter Regular 14/22 `#666` with a 4&nbsp;px gap. Title is the primary line in Inter Regular 16/24 `#000`.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListTextVariantsDemo />}
+  code={`<List divided>
+  <ListItem title="Title" />
+  <ListItem label="Label" title="Title" />
+  <ListItem label="Label" title="Title" description="Text" />
+</List>`}
+/>
+
+## Leading slot
+
+Any of icon, avatar/image, or an interactive control. Controls use `leadingGap="sm"` to match the tight 8&nbsp;px spacing Figma uses for switches, checkboxes, and radio buttons.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListLeadingDemo />}
+  code={`<ListItem leading={<ListIcon><RavenIcon /></ListIcon>} title="Icon leading" />
+<ListItem leading={<ListAvatar src={src} />} label="Label" title="Image leading" />
+<ListItem leading={<Checkbox />} leadingGap="sm" title="Checkbox leading" />
+<ListItem leading={<RadioGroupItem value="x" />} leadingGap="sm" title="Radio leading" />
+<ListItem leading={<Switch />} leadingGap="sm" title="Switch leading" />`}
+/>
+
+## Trailing slot
+
+Drop in an icon for affordance or any control for inline editing.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListTrailingDemo />}
+  code={`<ListItem title="Trailing icon" trailing={<ListIcon><RavenIcon /></ListIcon>} />
+<ListItem title="Trailing checkbox" trailing={<Checkbox />} />
+<ListItem title="Trailing radio" trailing={<RadioGroupItem value="x" />} />
+<ListItem title="Trailing switch" trailing={<Switch />} />`}
+/>
+
+## Three-line + image
+
+When `description` is set and a leading slot is present, `alignLeading` auto-resolves to `"start"` so the avatar lines up with the top of the text block — exactly as documented in Figma's 3-line image variants.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListThreeLineImageDemo />}
+  code={`<ListItem
+  leading={<ListAvatar src={src} />}
+  label="Label"
+  title="Title"
+  description="Supporting line of text"
+  trailing={<ListIcon><RavenIcon /></ListIcon>}
+/>`}
+/>
+
+## Interactive rows
+
+Pass `interactive` to render the row inside a `<button>` with the Pantheon hover wash (`Surface/Secondary` `#FAFAFA`) and a keyboard focus ring. Combine with `onClick` for selection patterns.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListInteractiveDemo />}
+  code={`<ListItem
+  interactive
+  onClick={() => setSelected(row.id)}
+  leading={<ListIcon><RavenIcon /></ListIcon>}
+  title={row.label}
+  description={row.desc}
+  trailing={selected === row.id ? <CheckIcon /> : null}
+/>`}
+/>
+
+## Dividers + sections
+
+Use `divided` on `<List>` to drop a hairline (`#E5E5E5`) between every adjacent row, or render an explicit `<ListDivider />` between sections.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ListDividerDemo />}
+  code={`<List>
+  <ListItem title="Inbox" />
+  <ListItem title="Sent" />
+  <ListDivider />
+  <ListItem title="Archive" />
+  <ListItem title="Trash" />
+</List>`}
+/>
+
+## API
+
+### `List`
+
+`<ul>` wrapper with the Pantheon typography stack applied. Forwards every `<ul>` attribute.
+
+<PropsTable
+  rows={[
+    {
+      name: 'divided',
+      type: 'boolean',
+      description: 'Drop a 1 px `#E5E5E5` divider between adjacent `<ListItem>` children.',
+    },
+  ]}
+/>
+
+### `ListItem`
+
+Prop-driven row. Bypass the props and pass `children` to opt into the lower-level slot API instead.
+
+<PropsTable
+  rows={[
+    { name: 'title', type: 'ReactNode', description: 'Primary line — Inter Regular 16/24 `#000`.' },
+    { name: 'label', type: 'ReactNode', description: 'Optional caps line above the title — Inter SemiBold 12/20 `#666`.' },
+    { name: 'description', type: 'ReactNode', description: 'Optional supporting line below the title — Inter Regular 14/22 `#666`.' },
+    { name: 'leading', type: 'ReactNode', description: 'Left slot — icon, avatar, checkbox, radio, switch.' },
+    { name: 'trailing', type: 'ReactNode', description: 'Right slot — icon or control.' },
+    {
+      name: 'leadingGap',
+      type: '"md" | "sm"',
+      default: '"md"',
+      description: '16 px (md) or 8 px (sm) gap between leading slot and content. Use `"sm"` for controls.',
+    },
+    {
+      name: 'alignLeading',
+      type: '"center" | "start"',
+      default: 'auto',
+      description: 'Vertical alignment of the leading slot. Defaults to `"start"` when a description and leading slot are both present; otherwise `"center"`.',
+    },
+    {
+      name: 'interactive',
+      type: 'boolean',
+      description: 'Render the row as a `<button>` with hover (#FAFAFA) and focus styles.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      description: 'Disable the interactive row — 50% opacity, no pointer events.',
+    },
+    {
+      name: 'onClick',
+      type: '(event: MouseEvent) => void',
+      description: 'Forwarded to the inner `<button>` when `interactive` is true.',
+    },
+  ]}
+/>
+
+### `ListItemLeading` · `ListItemContent` · `ListItemLabel` · `ListItemTitle` · `ListItemDescription` · `ListItemTrailing`
+
+Lower-level slots. Use these when you need to render arbitrary content in the leading/trailing positions or override default truncation/typography.
+
+### `ListAvatar`
+
+56×56 image slot with the Pantheon `#F0F0F0` fallback bg, 8&nbsp;px corner radius, and `mix-blend-luminosity` overlay (matches Figma's monochrome placeholder look). Pass `preserveColor` to render the source image at full saturation.
+
+<PropsTable
+  rows={[
+    { name: 'src', type: 'string', description: 'Image source URL.' },
+    { name: 'alt', type: 'string', default: '""', description: 'Alt text for the image.' },
+    { name: 'children', type: 'ReactNode', description: 'Override the rendered content (e.g. an inline SVG illustration).' },
+    {
+      name: 'preserveColor',
+      type: 'boolean',
+      description: 'Skip the luminosity blend mode. Use for full-color avatars.',
+    },
+  ]}
+/>
+
+### `ListIcon`
+
+20×20 inline-flex container for trailing/leading icons. Inherits `text-black` so any SVG using `currentColor` picks up the correct fill.
+
+### `ListDivider`
+
+Standalone hairline (`#E5E5E5`) you can render between rows when `divided` is too uniform — e.g. to mark section breaks.
+
+## Design tokens
+
+Specs from Figma node `3461:3` (Pantheon › List).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Row padding',
+      value: '16 px horizontal · 8 px vertical',
+      figmaName: 'Building Block',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Leading gap',
+      value: '16 px (icon/image-3-line) · 8 px (controls)',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Title',
+      value: 'Inter Regular · 16 / 24 · Text/Primary #000',
+      figmaName: 'Pantheon/Title/Medium-Regular',
+      visual: <span className="text-[16px] font-normal leading-[24px] text-black">Title</span>,
+    },
+    {
+      label: 'Label',
+      value: 'Inter SemiBold · 12 / 20 · Text/Secondary #666',
+      figmaName: 'Pantheon/Label/Medium-SemiBold',
+      visual: <span className="text-[12px] font-semibold leading-[20px] text-[#666]">LABEL</span>,
+    },
+    {
+      label: 'Description',
+      value: 'Inter Regular · 14 / 22 · Text/Secondary #666',
+      figmaName: 'Pantheon/Body/Medium-Regular',
+      visual: <span className="text-[14px] font-normal leading-[22px] text-[#666]">Text</span>,
+    },
+    {
+      label: 'Avatar',
+      value: '56 × 56 · 8 px radius · Surface/Tertiary #F0F0F0 fallback',
+      figmaName: 'Media',
+      visual: <div className="h-7 w-7 rounded-md bg-[#F0F0F0] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Icon',
+      value: '20 × 20 · currentColor',
+      visual: <div className="h-5 w-5 text-black"><svg viewBox="0 0 20 20" fill="currentColor" className="h-full w-full"><circle cx="10" cy="10" r="3" /></svg></div>,
+    },
+    {
+      label: 'Hover (interactive)',
+      value: 'Surface/Secondary · #FAFAFA',
+      visual: <div className="h-7 w-7 rounded-md bg-[#FAFAFA] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Divider',
+      value: '1 px solid · Border/Primary · #E5E5E5',
+      visual: <div className="h-px w-12 bg-[#E5E5E5]" />,
+    },
+    {
+      label: 'Row bg',
+      value: 'Surface/Primary · #FFFFFF',
+      visual: <div className="h-7 w-7 rounded-md bg-white ring-1 ring-inset ring-black/10" />,
+    },
+  ]}
+/>

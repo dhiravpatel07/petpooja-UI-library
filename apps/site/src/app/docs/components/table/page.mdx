@@ -1,0 +1,498 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  TableDefaultDemo,
+  TableToolbarActionsDemo,
+  TableExpandableDemo,
+  TableStatusDemo,
+  TableCompactDemo,
+} from '@/components/demos/table-demo';
+
+# Table
+
+Composable data-table primitives for dashboards, lists, and admin surfaces. One set of pieces — `Table`, `TableRoot`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell` — plus higher-level helpers (`TableToolbar`, `TablePagination`, `TableStatus`, `TableLink`, `TableExpandToggle`) covers every variant on the Pantheon canvas: sortable headers, selectable rows, expandable rows with sub-rows, status pills, link cells, and numeric columns.
+
+Pixel-perfect port of Figma node `2436:798` (Pantheon › Data Table). The outer container draws the 10&nbsp;px-radius border; row hairlines come from `Border/Primary` `#E5E5E5`; selected rows take the `Surface/Brand` `#E8F1FD` wash plus a 3&nbsp;px brand left rail; the selection toolbar swaps the chrome to the brand tint to make the active mode unmistakable.
+
+## Installation
+
+<InstallCommand name="table" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<Table>
+  <TableToolbar>
+    <TableToolbarInfo>3 items selected</TableToolbarInfo>
+    <TableToolbarActions>
+      <TableToolbarLink>Select all 200 items</TableToolbarLink>
+      <TableToolbarLink>Clear All</TableToolbarLink>
+    </TableToolbarActions>
+  </TableToolbar>
+
+  <TableRoot>
+    <TableHeader>
+      <TableRow>
+        <TableHead sortable sortDirection="asc">Header</TableHead>
+        <TableHead align="right">Numbers</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow selected>
+        <TableCell><TableLink href="#">Body</TableLink></TableCell>
+        <TableCell numeric>4,325</TableCell>
+      </TableRow>
+    </TableBody>
+  </TableRoot>
+
+  <TablePagination
+    page={1}
+    pageSize={10}
+    total={200}
+    onPageChange={setPage}
+    onPageSizeChange={setPageSize}
+  />
+</Table>
+```
+
+## Default
+
+A complete table: header checkbox with indeterminate state, two sortable columns, link cells in the primary column, a status pill, right-aligned numeric column, brand-washed selection toolbar that swaps in once any row is selected, and a controlled pagination footer.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<TableDefaultDemo />}
+  code={`<Table>
+  {selected.size > 0 ? (
+    <TableToolbar>
+      <TableToolbarInfo>{selected.size} items selected</TableToolbarInfo>
+      <TableToolbarActions>
+        <TableToolbarLink onClick={selectAll}>Select all 12 items</TableToolbarLink>
+        <TableToolbarLink onClick={clearAll}>Clear All</TableToolbarLink>
+      </TableToolbarActions>
+    </TableToolbar>
+  ) : null}
+
+  <TableRoot>
+    <TableHeader>
+      <TableRow>
+        <TableHead className="w-12" align="center">
+          <Checkbox checked={allSelected ? true : someSelected ? "indeterminate" : false}
+                    onCheckedChange={toggleAllOnPage} />
+        </TableHead>
+        <TableHead sortable sortDirection={sort.column === 'header' ? sort.direction : false}
+                   onSort={() => toggleSort('header')}>
+          Header
+        </TableHead>
+        <TableHead>Header</TableHead>
+        <TableHead>Long Header…</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead align="right" sortable
+                   sortDirection={sort.column === 'number' ? sort.direction : false}
+                   onSort={() => toggleSort('number')}>
+          Numbers
+        </TableHead>
+      </TableRow>
+    </TableHeader>
+
+    <TableBody>
+      {rows.map((row) => (
+        <TableRow key={row.id} selected={selected.has(row.id)}>
+          <TableCell align="center" className="w-12">
+            <Checkbox checked={selected.has(row.id)}
+                      onCheckedChange={() => toggleOne(row.id)} />
+          </TableCell>
+          <TableCell><TableLink href="#">{row.header}</TableLink></TableCell>
+          <TableCell>{row.secondary}</TableCell>
+          <TableCell>{row.long}</TableCell>
+          <TableCell><TableStatus tone="info">{row.status}</TableStatus></TableCell>
+          <TableCell numeric>{row.number.toLocaleString()}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </TableRoot>
+
+  <TablePagination page={page} pageSize={pageSize} total={total}
+                   onPageChange={setPage} onPageSizeChange={setPageSize} />
+</Table>`}
+/>
+
+## Selection toolbar — custom actions
+
+`TableToolbarActions` accepts arbitrary children, so the same chrome works for bulk-edit actions or the "select all across pages" affordance.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<TableToolbarActionsDemo />}
+  code={`<TableToolbar>
+  <TableToolbarInfo>{count} items selected</TableToolbarInfo>
+  <TableToolbarActions>
+    <Button size="sm" leadingIcon={<PlusIcon />}>Primary</Button>
+    <Button variant="outline" size="sm" leadingIcon={<TrashIcon />}>Secondary</Button>
+    <TableToolbarLink>Clear Selection</TableToolbarLink>
+  </TableToolbarActions>
+</TableToolbar>`}
+/>
+
+## Expandable rows
+
+`TableExpandToggle` flips the chevron and toggles your own state. Render sub-rows underneath with `sub` for the `Surface/Secondary` wash and an indented label to match the Figma hierarchy.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<TableExpandableDemo />}
+  code={`<TableRow>
+  <TableCell align="center" className="w-12">
+    <TableExpandToggle expanded={isOpen} onClick={() => toggleRow(row.id)} />
+  </TableCell>
+  <TableCell><TableLink href="#">{row.header}</TableLink></TableCell>
+  <TableCell numeric>{row.number}</TableCell>
+</TableRow>
+
+{isOpen && row.children?.map((child) => (
+  <TableRow key={child.id} sub>
+    <TableCell className="w-12" />
+    <TableCell className="pl-10">{child.header}</TableCell>
+    <TableCell numeric>{child.number}</TableCell>
+  </TableRow>
+))}`}
+/>
+
+## Status tones
+
+`TableStatus` ships with five semantic tones that map to the Pantheon status palette. Pass any tone or override `style` for a one-off colour.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<TableStatusDemo />}
+  code={`<TableStatus tone="info">Active</TableStatus>
+<TableStatus tone="success">Completed</TableStatus>
+<TableStatus tone="warning">Pending</TableStatus>
+<TableStatus tone="danger">Failed</TableStatus>
+<TableStatus tone="neutral">Archived</TableStatus>`}
+/>
+
+## Compact — no toolbar, no pagination
+
+The chrome is opt-in. Drop just `TableRoot` + `TableHeader` + `TableBody` inside `Table` for a clean, content-only data display.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<TableCompactDemo />}
+  code={`<Table>
+  <TableRoot>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Kitchen</TableHead>
+        <TableHead>Location</TableHead>
+        <TableHead align="right">Orders</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {rows.map((row) => (
+        <TableRow key={row.id}>
+          <TableCell>{row.kitchen}</TableCell>
+          <TableCell>{row.location}</TableCell>
+          <TableCell numeric>{row.orders}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </TableRoot>
+</Table>`}
+/>
+
+## API
+
+### `Table`
+
+Outer wrapper — draws the 10&nbsp;px-radius border, sets the Inter font stack, and clips children with `overflow: hidden` so the corners read correctly. Forwards every `<div>` attribute.
+
+### `TableRoot`
+
+The actual `<table>` element. Sits between toolbar and pagination.
+
+<PropsTable
+  rows={[
+    {
+      name: 'scrollable',
+      type: 'boolean',
+      default: 'true',
+      description: 'Wrap the table in an `overflow-x-auto` container so wide tables can scroll without breaking the outer chrome.',
+    },
+  ]}
+/>
+
+### `TableHeader` · `TableBody` · `TableFooter`
+
+`<thead>`, `<tbody>`, `<tfoot>` wrappers. Each draws the appropriate hairline rules (`#E5E5E5`).
+
+### `TableRow`
+
+<PropsTable
+  rows={[
+    {
+      name: 'selected',
+      type: 'boolean',
+      description: 'Paint the row with the `Surface/Brand` wash (`#E8F1FD`) and a 3 px brand left rail.',
+    },
+    {
+      name: 'sub',
+      type: 'boolean',
+      description: 'Nested / child row — sits on `Surface/Secondary` (`#FAFAFA`).',
+    },
+    {
+      name: 'interactive',
+      type: 'boolean',
+      description: 'Render hover wash + focus ring + pointer cursor. Combine with `onClick` for row-as-link patterns.',
+    },
+  ]}
+/>
+
+### `TableHead`
+
+<PropsTable
+  rows={[
+    {
+      name: 'sortable',
+      type: 'boolean',
+      description: 'Render the sort affordance (chevron stack) as a `<button>`. Fires `onSort` when activated.',
+    },
+    {
+      name: 'sortDirection',
+      type: '"asc" | "desc" | false',
+      default: 'false',
+      description: 'Current sort direction. `false` paints the inactive (unsorted) state. Active direction takes the brand colour.',
+    },
+    {
+      name: 'onSort',
+      type: '() => void',
+      description: 'Fires when the sort affordance is activated.',
+    },
+    {
+      name: 'align',
+      type: '"left" | "center" | "right"',
+      default: '"left"',
+      description: 'Horizontal alignment of the header label.',
+    },
+    {
+      name: 'compact',
+      type: 'boolean',
+      description: 'Drop to a 36 px / 12 px header for dense tables.',
+    },
+  ]}
+/>
+
+### `TableCell`
+
+<PropsTable
+  rows={[
+    {
+      name: 'align',
+      type: '"left" | "center" | "right"',
+      description: 'Horizontal alignment of the cell contents.',
+    },
+    {
+      name: 'numeric',
+      type: 'boolean',
+      description: 'Shorthand for right-aligned + `tabular-nums`. Use for currency, counts, and percentages.',
+    },
+    {
+      name: 'flush',
+      type: 'boolean',
+      description: 'Drop horizontal padding (handy for slot cells like checkboxes / chevrons).',
+    },
+  ]}
+/>
+
+### `TableExpandToggle`
+
+24×24 chevron button that flips when the parent row opens.
+
+<PropsTable
+  rows={[
+    {
+      name: 'expanded',
+      type: 'boolean',
+      description: 'Current open state — drives the chevron rotation and `aria-expanded`.',
+    },
+    {
+      name: 'onClick',
+      type: '(e: MouseEvent) => void',
+      description: 'Fires when the toggle is activated. The host owns expanded state.',
+    },
+  ]}
+/>
+
+### `TableLink`
+
+Body-cell link variant — brand-coloured label with an outbound `↗` glyph. Hides the icon with `noIcon`.
+
+<PropsTable
+  rows={[
+    {
+      name: 'href',
+      type: 'string',
+      description: 'Forwarded to the underlying `<a>` element.',
+    },
+    {
+      name: 'noIcon',
+      type: 'boolean',
+      description: 'Suppress the trailing arrow glyph.',
+    },
+  ]}
+/>
+
+### `TableToolbar` · `TableToolbarInfo` · `TableToolbarActions` · `TableToolbarLink`
+
+The horizontal bar that sits above the table when rows are selected. `TableToolbarInfo` holds the "N items selected" caption; `TableToolbarActions` is the right cluster (buttons or links); `TableToolbarLink` is the plain text-brand affordance used for "Select all 200 items" / "Clear All" / "Clear Selection".
+
+<PropsTable
+  rows={[
+    {
+      name: 'active',
+      type: 'boolean',
+      default: 'true',
+      description: 'Paint with the brand wash (`#E8F1FD`). Set to `false` for a neutral toolbar.',
+    },
+  ]}
+/>
+
+### `TablePagination`
+
+Controlled pagination footer. Owns nothing — the host passes `page`, `pageSize`, and `total`, and is notified through `onPageChange` / `onPageSizeChange`.
+
+<PropsTable
+  rows={[
+    { name: 'page', type: 'number', description: 'Current 1-indexed page.' },
+    { name: 'pageSize', type: 'number', description: 'Rows per page — drives the displayed range.' },
+    { name: 'total', type: 'number', description: 'Total row count across all pages.' },
+    {
+      name: 'pageSizeOptions',
+      type: 'number[]',
+      default: '[10, 25, 50, 100]',
+      description: 'Options shown in the rows-per-page picker.',
+    },
+    {
+      name: 'onPageChange',
+      type: '(page: number) => void',
+      description: 'Fires when the user clicks the previous/next chevron.',
+    },
+    {
+      name: 'onPageSizeChange',
+      type: '(pageSize: number) => void',
+      description: 'Fires when the user picks a different rows-per-page value.',
+    },
+    {
+      name: 'rowsPerPageLabel',
+      type: 'string',
+      default: '"Rows per page:"',
+      description: 'Override the label preceding the rows-per-page picker.',
+    },
+    {
+      name: 'formatRange',
+      type: '(start: number, end: number, total: number) => string',
+      description: 'Custom range formatter. Defaults to `"start-end of total"`.',
+    },
+  ]}
+/>
+
+### `TableStatus`
+
+Compact pill for status / tag columns. Five semantic tones map to the Pantheon status palette.
+
+<PropsTable
+  rows={[
+    {
+      name: 'tone',
+      type: '"info" | "success" | "warning" | "danger" | "neutral"',
+      default: '"info"',
+      description: 'Semantic colour — drives the background + label colour pair.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `2436:798` (Pantheon › Data Table).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Outer container',
+      value: '10 px radius · 1 px solid `#E5E5E5`',
+      figmaName: 'square/medium · Border/Primary',
+      visual: <div className="h-7 w-12 rounded-[10px] border border-[#E5E5E5]" />,
+    },
+    {
+      label: 'Row height',
+      value: '48 px (body) · 44 px (header)',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Cell padding',
+      value: '16 px horizontal · height owns vertical',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Body text',
+      value: 'Inter Regular · 14 / 22 · Text/Primary `#000`',
+      figmaName: 'Pantheon/Body/Medium-Regular',
+      visual: <span className="text-[14px] font-normal leading-[22px] text-black">Body</span>,
+    },
+    {
+      label: 'Header text',
+      value: 'Inter Medium · 14 / 22 · Text/Primary `#000`',
+      figmaName: 'Pantheon/Title/Small-Medium',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-black">Header</span>,
+    },
+    {
+      label: 'Selected row',
+      value: 'bg `#E8F1FD` · 3 px `#1770EE` left rail',
+      figmaName: 'Surface/Brand · Border/Brand',
+      visual: <div className="h-7 w-12 rounded-md bg-[#E8F1FD] shadow-[inset_3px_0_0_0_#1770EE]" />,
+    },
+    {
+      label: 'Sub-row',
+      value: 'bg `#FAFAFA`',
+      figmaName: 'Surface/Secondary',
+      visual: <div className="h-7 w-12 rounded-md bg-[#FAFAFA] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Toolbar (selection)',
+      value: 'bg `#E8F1FD` · text `#1770EE`',
+      figmaName: 'Surface/Brand · Text/Brand',
+      visual: <div className="flex h-7 w-12 items-center justify-center rounded-md bg-[#E8F1FD] text-[12px] font-medium text-[#1770EE]">3</div>,
+    },
+    {
+      label: 'Link cell',
+      value: 'Inter Regular · 14 / 22 · `#1770EE` · trailing ↗',
+      figmaName: 'Text/Brand',
+      visual: <span className="text-[14px] leading-[22px] text-[#1770EE]">Body ↗</span>,
+    },
+    {
+      label: 'Hairline rule',
+      value: '1 px solid `#E5E5E5`',
+      figmaName: 'Border/Primary',
+      visual: <div className="h-px w-12 bg-[#E5E5E5]" />,
+    },
+    {
+      label: 'Status · info',
+      value: 'bg `#E8F1FD` · text `#1770EE`',
+      figmaName: 'Status/Info',
+      visual: <span className="inline-flex items-center rounded-[200px] bg-[#E8F1FD] px-2 text-[11px] font-medium text-[#1770EE]">Badge</span>,
+    },
+    {
+      label: 'Status · success',
+      value: 'bg `#E6F4EA` · text `#1E7E34`',
+      figmaName: 'Status/Success',
+      visual: <span className="inline-flex items-center rounded-[200px] bg-[#E6F4EA] px-2 text-[11px] font-medium text-[#1E7E34]">Badge</span>,
+    },
+  ]}
+/>

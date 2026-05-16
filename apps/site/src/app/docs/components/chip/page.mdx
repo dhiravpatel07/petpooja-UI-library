@@ -1,0 +1,290 @@
+import { Chip } from '@petpooja/ui';
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  ChipAllVariants,
+  ChipStates,
+  ChipFilterDemo,
+  ChipMultiSelectDemo,
+  ChipDisabledDemo,
+} from '@/components/demos/chip-demo';
+
+# Chip
+
+Compact selectable label for filters, tags, and quick-pick choices. One component covers every documented Pantheon variant — four sizes, two shapes, three states, and any combination of leading / trailing icons.
+
+Pressed maps to the native `:active` state; Selected is a controlled `selected` prop you toggle from your own state. Pixel-perfect port of Figma node `57:165` (Pantheon › Chips).
+
+## Installation
+
+<InstallCommand name="chip" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { useState } from 'react';
+import { Chip } from '@petpooja/ui';
+
+export function Demo() {
+  const [selected, setSelected] = useState(false);
+  return (
+    <Chip selected={selected} onClick={() => setSelected((v) => !v)}>
+      Bestseller
+    </Chip>
+  );
+}
+```
+
+## Variants
+
+Every combination of `shape` × `size` × icon configuration that ships in Figma.
+
+<ComponentPreview
+  previewClassName="!min-h-[480px] !p-8"
+  preview={<ChipAllVariants />}
+  code={`<Chip>Label</Chip>
+<Chip leadingIcon={<Icon />}>Label</Chip>
+<Chip trailingIcon={<Icon />}>Label</Chip>
+<Chip leadingIcon={<Icon />} trailingIcon={<Icon />}>Label</Chip>`}
+/>
+
+## States
+
+Active is the idle state. Pressed appears while the pointer is held (no prop required). Selected is a controlled flag that switches to the brand-tinted treatment.
+
+<ComponentPreview
+  previewClassName="!min-h-[260px] !p-8"
+  preview={<ChipStates />}
+  code={`<Chip>Label</Chip>
+<Chip selected>Label</Chip>`}
+/>
+
+## Single-select filter
+
+A common pattern: bind `selected` to a single piece of state to build a filter bar.
+
+<ComponentPreview
+  previewClassName="!min-h-[120px] !p-8"
+  preview={<ChipFilterDemo />}
+  code={`const FILTERS = ['All', 'Veg', 'Non-veg', 'Spicy', 'Bestseller'] as const;
+
+export function FilterBar() {
+  const [active, setActive] = useState<(typeof FILTERS)[number]>('All');
+  return (
+    <div className="flex flex-wrap gap-2">
+      {FILTERS.map((filter) => (
+        <Chip
+          key={filter}
+          size="sm"
+          selected={active === filter}
+          onClick={() => setActive(filter)}
+        >
+          {filter}
+        </Chip>
+      ))}
+    </div>
+  );
+}`}
+/>
+
+## Multi-select
+
+Drive `selected` from a `Set` to let users pick more than one.
+
+<ComponentPreview
+  previewClassName="!min-h-[120px] !p-8"
+  preview={<ChipMultiSelectDemo />}
+  code={`const [picked, setPicked] = useState<Set<Tag>>(new Set());
+
+<Chip
+  shape="square"
+  selected={picked.has(tag)}
+  leadingIcon={<Icon />}
+  onClick={() => toggle(tag)}
+>
+  {tag}
+</Chip>`}
+/>
+
+## Disabled
+
+Standard native `disabled` attribute — gray palette and `pointer-events: none`.
+
+<ComponentPreview
+  previewClassName="!min-h-[120px] !p-8"
+  preview={<ChipDisabledDemo />}
+  code={`<Chip disabled>Label</Chip>
+<Chip disabled selected>Label</Chip>`}
+/>
+
+## API
+
+Extends every standard `<button>` attribute (`onClick`, `disabled`, `form`, `name`, etc.).
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Height (32 / 36 / 40 / 48 px) plus matching font and icon size.',
+    },
+    {
+      name: 'shape',
+      type: "'square' | 'round'",
+      default: "'round'",
+      description: (
+        <>
+          <code>round</code> is a 200&nbsp;px pill. <code>square</code> uses a 10&nbsp;px corner radius.
+        </>
+      ),
+    },
+    {
+      name: 'selected',
+      type: 'boolean',
+      default: 'false',
+      description: (
+        <>
+          Persistent toggled state. Switches to the brand-tinted fill, 1.25&nbsp;px brand border, and Semi-Bold label.
+          Mirrors <code>aria-pressed</code> for screen readers.
+        </>
+      ),
+    },
+    {
+      name: 'leadingIcon',
+      type: 'ReactNode',
+      description: 'Rendered before children. Auto-sized to match the active size.',
+    },
+    {
+      name: 'trailingIcon',
+      type: 'ReactNode',
+      description: 'Rendered after children. Auto-sized to match the active size.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Standard native disabled state — gray palette and pointer-events: none.',
+    },
+    {
+      name: 'type',
+      type: "'button' | 'submit' | 'reset'",
+      default: "'button'",
+      description: 'Native button type. Defaults to button to avoid accidental form submits.',
+    },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `57:165` (Pantheon › Chips).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Heights (xs / sm / md / lg)',
+      value: '32 / 36 / 40 / 48 px',
+      visual: (
+        <div className="flex items-end gap-2">
+          <div className="h-8 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-9 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-10 w-2 rounded-sm bg-[#1770ee]" />
+          <div className="h-12 w-2 rounded-sm bg-[#1770ee]" />
+        </div>
+      ),
+    },
+    {
+      label: 'Square radius',
+      value: '10 px (all sizes)',
+      figmaName: 'square/medium',
+      visual: <div className="h-7 w-7 rounded-[10px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Round radius',
+      value: '200 px (full pill)',
+      figmaName: 'round/rounded',
+      visual: <div className="h-7 w-12 rounded-[200px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Active',
+      value: 'bg transparent · 1 px #e5e5e5 border · text #000',
+      figmaName: 'border/primary · text/primary',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-[200px] border border-[#e5e5e5] bg-transparent text-[10px] font-medium text-black">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Pressed',
+      value: 'rgba(58, 132, 236, 0.08)',
+      figmaName: 'surface-state/secondary/opacity-08',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-[200px] border border-[#e5e5e5] bg-[rgba(58,132,236,0.08)] text-[10px] font-medium text-black">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Selected',
+      value: 'bg #e8f1fd · 1.25 px #1770ee border · text #1770ee Semi-Bold',
+      figmaName: 'buttons/tonal · border/brand · text/brand',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-[200px] border-[1.25px] border-[#1770ee] bg-[#e8f1fd] text-[10px] font-semibold text-[#1770ee]">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Disabled',
+      value: 'bg #f5f5f5 · text #999 · border #ccc',
+      figmaName: 'buttons/disabled · text/disabled · border/disabled',
+      visual: (
+        <div className="flex h-9 w-12 items-center justify-center rounded-[200px] border border-[#cccccc] bg-[#f5f5f5] text-[10px] font-medium text-[#999999]">
+          Aa
+        </div>
+      ),
+    },
+    {
+      label: 'Padding',
+      value: 'px-4 (16 px) · py-2 (8 px) · gap 8 px',
+      visual: (
+        <div className="flex items-center gap-2">
+          <span className="h-5 w-2 rounded-sm bg-[#1770ee]/30" />
+          <span className="text-[12px] font-medium text-foreground">Label</span>
+          <span className="h-5 w-2 rounded-sm bg-[#1770ee]/30" />
+        </div>
+      ),
+    },
+    {
+      label: 'Label font',
+      value: 'Inter Medium · 14/22 (xs/sm/md) · 16/24 (lg)',
+      figmaName: 'body-medium · title-small · title-medium',
+      visual: <span className="text-[16px] font-medium leading-6">Aa</span>,
+    },
+    {
+      label: 'Icon size',
+      value: '18 / 18 / 20 / 24 px',
+      visual: (
+        <div className="flex items-end gap-2 text-[#1770ee]">
+          <svg viewBox="0 0 24 24" className="size-[18px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <svg viewBox="0 0 24 24" className="size-[20px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <svg viewBox="0 0 24 24" className="size-[24px]" fill="currentColor">
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+        </div>
+      ),
+    },
+  ]}
+/>

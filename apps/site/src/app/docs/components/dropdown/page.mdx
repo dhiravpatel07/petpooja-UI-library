@@ -1,0 +1,411 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  DropdownDefaultDemo,
+  DropdownBareDemo,
+  DropdownMultiSelectDemo,
+  DropdownCtaDemo,
+} from '@/components/demos/dropdown-demo';
+
+# Dropdown
+
+Composable menu surface for selection, filtering, and multi-pick flows. Four documented combinations from Figma — **Search × CTA** — built out of three reusable item families (default, checkbox, and CTA buttons).
+
+Built on **Radix Popover** so anchored positioning, ESC dismissal, click-outside, and focus return come for free. Pixel-perfect port of Figma node `2768:141` (Pantheon › Dropdown).
+
+## Installation
+
+<InstallCommand name="dropdown" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<Dropdown>
+  <DropdownTrigger />
+  <DropdownContent>
+    <DropdownSearch />               {/* optional */}
+    <DropdownList>
+      <DropdownItem />
+      <DropdownCheckboxItem />
+      <DropdownSeparator />
+    </DropdownList>
+    <DropdownFooter>                 {/* optional */}
+      <DropdownCancelButton />
+      <DropdownConfirmButton />
+    </DropdownFooter>
+  </DropdownContent>
+</Dropdown>
+```
+
+## Search + selectable items
+
+The default Pantheon variant. A 48&nbsp;px search row sits above the list with a 1&nbsp;px `Border/Primary` divider underneath. Clicking an item updates the trigger label and closes the menu.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[360px]"
+  preview={<DropdownDefaultDemo />}
+  code={`<Dropdown>
+  <DropdownTrigger>Banana</DropdownTrigger>
+  <DropdownContent>
+    <DropdownSearch value={query} onValueChange={setQuery} />
+    <DropdownList>
+      {fruits.map((f) => (
+        <DropdownItem
+          key={f}
+          leadingIcon={<RavenIcon />}
+          selected={f === selected}
+          onClick={() => setSelected(f)}
+        >
+          {f}
+        </DropdownItem>
+      ))}
+    </DropdownList>
+  </DropdownContent>
+</Dropdown>`}
+/>
+
+## Plain list (no search, no CTA)
+
+The most compact variant — just a list of selectable items. Selected rows render in `Text/Brand` with an `E8F1FD` pill.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[340px]"
+  preview={<DropdownBareDemo />}
+  code={`<Dropdown>
+  <DropdownTrigger>Cherry</DropdownTrigger>
+  <DropdownContent>
+    <DropdownList>
+      <DropdownItem leadingIcon={<RavenIcon />} selected>
+        Cherry
+      </DropdownItem>
+      <DropdownItem leadingIcon={<RavenIcon />}>Apple</DropdownItem>
+      <DropdownItem leadingIcon={<RavenIcon />}>Banana</DropdownItem>
+    </DropdownList>
+  </DropdownContent>
+</Dropdown>`}
+/>
+
+## Multi-select with CTA footer
+
+Checkbox items don't close the menu on click — the consumer commits the selection through the **Apply** button in the footer. The footer is 56&nbsp;px tall with two equal-width 36&nbsp;px buttons.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[400px]"
+  preview={<DropdownMultiSelectDemo />}
+  code={`<Dropdown>
+  <DropdownTrigger>{count} selected</DropdownTrigger>
+  <DropdownContent>
+    <DropdownSearch value={query} onValueChange={setQuery} />
+    <DropdownList>
+      {visible.map((f) => (
+        <DropdownCheckboxItem
+          key={f}
+          checked={draft.has(f)}
+          onCheckedChange={(checked) => toggle(f, checked)}
+        >
+          {f}
+        </DropdownCheckboxItem>
+      ))}
+    </DropdownList>
+    <DropdownFooter>
+      <DropdownCancelButton onClick={reset}>Cancel</DropdownCancelButton>
+      <DropdownConfirmButton onClick={apply}>Apply</DropdownConfirmButton>
+    </DropdownFooter>
+  </DropdownContent>
+</Dropdown>`}
+/>
+
+## CTA footer without search
+
+Skip the search row and keep the footer for confirm/cancel flows. Pass `closeOnSelect={false}` to single-select items so the menu stays open while the user reconsiders.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[360px]"
+  preview={<DropdownCtaDemo />}
+  code={`<Dropdown open={open} onOpenChange={setOpen}>
+  <DropdownTrigger>{confirmed}</DropdownTrigger>
+  <DropdownContent>
+    <DropdownList>
+      {options.map((o) => (
+        <DropdownItem
+          key={o}
+          leadingIcon={<RavenIcon />}
+          selected={o === draft}
+          closeOnSelect={false}
+          onClick={() => setDraft(o)}
+        >
+          {o}
+        </DropdownItem>
+      ))}
+    </DropdownList>
+    <DropdownFooter>
+      <DropdownCancelButton onClick={() => setOpen(false)}>
+        Cancel
+      </DropdownCancelButton>
+      <DropdownConfirmButton onClick={commit}>Confirm</DropdownConfirmButton>
+    </DropdownFooter>
+  </DropdownContent>
+</Dropdown>`}
+/>
+
+## API
+
+### `Dropdown`
+
+Root. Forwards every Radix `Popover.Root` prop — pass `open` + `onOpenChange` for controlled, or just render it uncontrolled.
+
+<PropsTable
+  rows={[
+    {
+      name: 'open',
+      type: 'boolean',
+      description: 'Controlled open state. Omit to let the dropdown manage its own state.',
+    },
+    {
+      name: 'defaultOpen',
+      type: 'boolean',
+      description: 'Initial open state when uncontrolled.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Fires whenever the menu opens or closes.',
+    },
+    {
+      name: 'modal',
+      type: 'boolean',
+      default: 'false',
+      description: 'Radix Popover `modal` — when true, traps focus and blocks outside interactions.',
+    },
+  ]}
+/>
+
+### `DropdownTrigger`
+
+Re-export of `Popover.Trigger`. Use `asChild` to attach the open/close behavior to any element you provide.
+
+### `DropdownContent`
+
+The 250&nbsp;px panel. Renders into a portal, anchored to the trigger. Adds the Pantheon shadow + 10&nbsp;px radius automatically.
+
+<PropsTable
+  rows={[
+    {
+      name: 'sideOffset',
+      type: 'number',
+      default: '6',
+      description: 'Distance in px between trigger and panel.',
+    },
+    {
+      name: 'align',
+      type: '"start" | "center" | "end"',
+      default: '"start"',
+      description: 'How the panel aligns to the trigger along the chosen side.',
+    },
+    {
+      name: 'side',
+      type: '"top" | "right" | "bottom" | "left"',
+      default: '"bottom"',
+      description: 'Which side of the trigger the panel anchors to.',
+    },
+  ]}
+/>
+
+### `DropdownSearch`
+
+Optional 48&nbsp;px row at the top of the menu. Manages its own clear-button state but exposes a controlled `value` API.
+
+<PropsTable
+  rows={[
+    { name: 'value', type: 'string', description: 'Controlled input value.' },
+    { name: 'defaultValue', type: 'string', description: 'Initial value when uncontrolled.' },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Fires on every keystroke (and when the × clears the input).',
+    },
+    { name: 'placeholder', type: 'string', default: '"Search"', description: 'Placeholder text.' },
+  ]}
+/>
+
+### `DropdownItem`
+
+Selectable row. Renders as a `<button role="menuitem">`. Closes the menu on click unless `closeOnSelect` is `false`.
+
+<PropsTable
+  rows={[
+    {
+      name: 'leadingIcon',
+      type: 'ReactNode',
+      description: 'Optional 16&nbsp;px icon shown before the label.',
+    },
+    {
+      name: 'trailingIcon',
+      type: 'ReactNode',
+      default: '<ChevronRight />',
+      description: 'Defaults to the Pantheon chevron. Pass `null` to hide entirely.',
+    },
+    {
+      name: 'selected',
+      type: 'boolean',
+      description: 'Renders the selected pill (`E8F1FD` bg, brand label, brand icons).',
+    },
+    {
+      name: 'closeOnSelect',
+      type: 'boolean',
+      default: 'true',
+      description: 'Set to `false` to keep the menu open after click (e.g. confirm flows).',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      description: 'Standard disabled state — 50% opacity and pointer events off.',
+    },
+  ]}
+/>
+
+### `DropdownCheckboxItem`
+
+Multi-select row. Renders the Pantheon 17&nbsp;px checkbox (`#1770EE` fill when checked). Does **not** close the menu by default.
+
+<PropsTable
+  rows={[
+    {
+      name: 'checked',
+      type: 'boolean',
+      description: 'Controlled checked state.',
+    },
+    {
+      name: 'defaultChecked',
+      type: 'boolean',
+      description: 'Initial checked state when uncontrolled.',
+    },
+    {
+      name: 'onCheckedChange',
+      type: '(checked: boolean) => void',
+      description: 'Fires on click with the next value.',
+    },
+    {
+      name: 'closeOnSelect',
+      type: 'boolean',
+      default: 'false',
+      description: 'Override to close the menu after every toggle.',
+    },
+  ]}
+/>
+
+### `DropdownFooter` · `DropdownCancelButton` · `DropdownConfirmButton`
+
+Preset CTA row. The footer reserves a fixed 56&nbsp;px height; both buttons are 36&nbsp;px tall and share the row equally (`flex-1`). Cancel = `Buttons/Tertiary` outline, Confirm = `Buttons/Primary` fill — both render as native `<button type="button">` elements so they accept every standard prop including `onClick`, `disabled`, `aria-*`.
+
+### `DropdownList` · `DropdownSeparator` · `DropdownLabel`
+
+Optional grouping helpers. `DropdownList` is a `role="menu"` flex column with 4&nbsp;px vertical padding; `DropdownSeparator` is the `E5E5E5` hairline; `DropdownLabel` is the small uppercase group header in `#666666`.
+
+## Keyboard
+
+| Key                | Behavior                                                        |
+| ------------------ | --------------------------------------------------------------- |
+| <kbd>Tab</kbd>     | Standard tab order (search → items → footer).                   |
+| <kbd>↓</kbd> / <kbd>↑</kbd> | Roving focus across items + checkbox items.            |
+| <kbd>Home</kbd> / <kbd>End</kbd> | Jump to the first / last item.                    |
+| <kbd>Enter</kbd> · <kbd>Space</kbd> | Activate the focused item.                     |
+| <kbd>Esc</kbd>     | Close the menu and return focus to the trigger.                 |
+
+## Design tokens
+
+Specs from Figma node `2768:141` (Pantheon › Dropdown).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Panel size',
+      value: '250 px wide · 240 / 288 px tall (CTA / Search variants)',
+      figmaName: 'Dropdown',
+      visual: (
+        <div className="h-7 w-12 rounded-[6px] bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)] ring-1 ring-inset ring-black/5" />
+      ),
+    },
+    {
+      label: 'Corner radius',
+      value: '10 px',
+      figmaName: 'Square/Medium',
+      visual: <div className="h-7 w-7 rounded-[10px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Item height',
+      value: '48 px · 16 / 12 px horizontal padding',
+      figmaName: 'Sub Building Blocks - Labels',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Label · Default',
+      value: 'Inter Regular · 14 / 22 · Text/Primary #000',
+      figmaName: 'Pantheon/Body/Medium-Regular',
+      visual: <span className="text-[14px] font-normal leading-[22px] text-black">Label</span>,
+    },
+    {
+      label: 'Label · Selected',
+      value: 'Inter Medium · 14 / 22 · Text/Brand #1770EE',
+      figmaName: 'Pantheon/Body/Medium-Medium',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-[#1770EE]">Label</span>,
+    },
+    {
+      label: 'Hover fill',
+      value: 'Surface/Tertiary · #F0F0F0',
+      visual: <div className="h-7 w-7 rounded-md bg-[#F0F0F0]" />,
+    },
+    {
+      label: 'Selected fill',
+      value: 'Surface/Brand · #E8F1FD',
+      visual: <div className="h-7 w-7 rounded-md bg-[#E8F1FD]" />,
+    },
+    {
+      label: 'Checkbox hover fill',
+      value: 'Surface/Secondary · #FAFAFA',
+      visual: <div className="h-7 w-7 rounded-md bg-[#FAFAFA] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Divider',
+      value: '1 px solid · Border/Primary · #E5E5E5',
+      visual: <div className="h-px w-12 bg-[#E5E5E5]" />,
+    },
+    {
+      label: 'Footer height',
+      value: '56 px · 16 px padding · 8 px gap',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Primary button',
+      value: '36 px · #1770EE · white text · Inter Medium 14/22',
+      figmaName: 'Buttons/Primary',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-md bg-[#1770EE] px-2.5 text-[12px] font-medium text-white">
+          Primary
+        </span>
+      ),
+    },
+    {
+      label: 'Secondary button',
+      value: '36 px · white · 1 px border · black text · Inter Medium 14/22',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-md border border-[#E5E5E5] bg-white px-2.5 text-[12px] font-medium text-black">
+          Secondary
+        </span>
+      ),
+    },
+    {
+      label: 'Elevation',
+      value: '0 1 3 0 rgba(0,0,0,0.30) + 0 4 8 3 rgba(0,0,0,0.15)',
+      figmaName: 'Elevation/3',
+      visual: <div className="h-7 w-7 rounded-md bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]" />,
+    },
+  ]}
+/>

@@ -48,6 +48,24 @@ const preset: Partial<Config> = {
           from: { transform: 'translateY(0)' },
           to: { transform: 'translateY(100%)' },
         },
+        // Horizontal slide — used by the SideDrawer to enter / exit from
+        // the right or left edge of the viewport.
+        'slide-in-right': {
+          from: { transform: 'translateX(100%)' },
+          to: { transform: 'translateX(0)' },
+        },
+        'slide-out-right': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(100%)' },
+        },
+        'slide-in-left': {
+          from: { transform: 'translateX(-100%)' },
+          to: { transform: 'translateX(0)' },
+        },
+        'slide-out-left': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
+        },
         // Centered modal — keeps the `translate(-50%, -50%)` centering
         // intact while animating opacity + a subtle scale.
         'popup-in': {
@@ -64,6 +82,10 @@ const preset: Partial<Config> = {
         'fade-out': 'fade-out 150ms ease-in forwards',
         'slide-up': 'slide-up 250ms cubic-bezier(0.32, 0.72, 0, 1)',
         'slide-down': 'slide-down 200ms ease-in forwards',
+        'slide-in-right': 'slide-in-right 280ms cubic-bezier(0.32, 0.72, 0, 1)',
+        'slide-out-right': 'slide-out-right 220ms ease-in forwards',
+        'slide-in-left': 'slide-in-left 280ms cubic-bezier(0.32, 0.72, 0, 1)',
+        'slide-out-left': 'slide-out-left 220ms ease-in forwards',
         'popup-in': 'popup-in 200ms ease-out',
         'popup-out': 'popup-out 150ms ease-in forwards',
       },

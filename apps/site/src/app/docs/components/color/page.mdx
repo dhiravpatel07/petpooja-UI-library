@@ -1,0 +1,287 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  ColorSystemDemo,
+  ColorPaletteDemo,
+  ColorSwatchDemo,
+  ColorStatusDemo,
+  ColorNeutralsDemo,
+} from '@/components/demos/color-demo';
+
+# Color
+
+The full Pantheon color system as drop-in React primitives. Ten palettes — Primary, Secondary, four Accents, Gray, and three status families — wrapped in three composable parts: `ColorSwatch` for a single shade, `ColorPalette` for a column, and `ColorSystem` for the whole page.
+
+Every shade in the registry is the verbatim hex from Figma. Foreground labels auto-contrast against the background using WCAG relative luminance, so light and dark shades both stay readable without manual overrides. Pixel-perfect port of Figma node `66:689` (Pantheon › Colors).
+
+## Installation
+
+<InstallCommand name="color" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { ColorSystem, COLOR_PALETTES } from '@petpooja/ui';
+
+export function Demo() {
+  return <ColorSystem palettes={COLOR_PALETTES} />;
+}
+```
+
+Or render a single shade anywhere:
+
+```tsx
+import { ColorSwatch } from '@petpooja/ui';
+
+<ColorSwatch label="Primary 500" hex="#1770EE" />;
+```
+
+## All palettes
+
+Every palette from the Pantheon Colors page in canvas order. Each column is a `ColorPalette`; each row inside it is a `ColorSwatch`.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ColorSystemDemo />}
+  code={`import { ColorSystem } from '@petpooja/ui';
+
+<ColorSystem />`}
+/>
+
+## Single palette
+
+`ColorPalette` renders one column — a heading plus its full ramp. Light shades get a 1&nbsp;px black/5 inset ring so the swatch edge stays visible on white surfaces.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ColorPaletteDemo />}
+  code={`import { ColorPalette, PRIMARY_PALETTE, SECONDARY_PALETTE } from '@petpooja/ui';
+
+<ColorPalette palette={PRIMARY_PALETTE} />
+<ColorPalette palette={SECONDARY_PALETTE} />`}
+/>
+
+## Single swatch
+
+`ColorSwatch` is the atomic unit — pass any hex, get a 80&nbsp;px row with the label on the left and the uppercase hex on the right. Foreground flips to white once the background drops below ~50% luminance.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ColorSwatchDemo />}
+  code={`<ColorSwatch label="Primary 500" hex="#1770EE" />
+<ColorSwatch label="Gray 0" hex="#FFFFFF" />
+<ColorSwatch label="Gray 1000" hex="#000000" />
+<ColorSwatch label="Custom" hex="#FF6B35" />`}
+/>
+
+## Status palettes
+
+Status colors form a tighter ramp: Error and Success ship `100 / 500 / 600`; Warning shares the Yellow accent (100 → 900).
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ColorStatusDemo />}
+  code={`import { ColorPalette, ERROR_PALETTE, WARNING_PALETTE, SUCCESS_PALETTE } from '@petpooja/ui';
+
+<ColorPalette palette={ERROR_PALETTE} />
+<ColorPalette palette={WARNING_PALETTE} />
+<ColorPalette palette={SUCCESS_PALETTE} />`}
+/>
+
+## Neutrals
+
+The Gray ramp goes from `Gray 0` (pure white) through `Gray 1000` (pure black) — 11 stops total. The pure-white swatch keeps a faint ring so its bounds remain visible against light surfaces.
+
+<ComponentPreview
+  previewClassName="!p-6"
+  preview={<ColorNeutralsDemo />}
+  code={`import { ColorPalette, GRAY_PALETTE } from '@petpooja/ui';
+
+<ColorPalette palette={GRAY_PALETTE} />`}
+/>
+
+## API
+
+### `ColorSwatch`
+
+Extends every standard `<div>` attribute. The background and foreground are applied inline via `style` so any hex works — Tailwind never sees the value.
+
+<PropsTable
+  rows={[
+    {
+      name: 'label',
+      type: 'string',
+      description: 'Shown on the left of the swatch — usually `${palette} ${step}` (e.g. "Primary 500").',
+    },
+    {
+      name: 'hex',
+      type: 'string',
+      description: (
+        <>
+          Background color. Accepts <code>#RRGGBB</code> or bare <code>RRGGBB</code>. The right-hand readout always renders uppercase, without the leading <code>#</code>.
+        </>
+      ),
+    },
+    {
+      name: 'textColor',
+      type: 'string',
+      description: 'Optional override for the auto-contrasted label color. Pass any CSS color string.',
+    },
+  ]}
+/>
+
+### `ColorPalette`
+
+<PropsTable
+  rows={[
+    {
+      name: 'palette',
+      type: 'ColorPaletteSpec',
+      description: (
+        <>
+          The palette to render. Use one of the named exports (<code>PRIMARY_PALETTE</code>, <code>GRAY_PALETTE</code>, …) or build your own from <code>{`{ name, group?, shades }`}</code>.
+        </>
+      ),
+    },
+    {
+      name: 'children',
+      type: 'ReactNode',
+      description: 'Optional override that replaces the default swatch list — useful when you want a custom layout while keeping the heading.',
+    },
+  ]}
+/>
+
+### `ColorSystem`
+
+<PropsTable
+  rows={[
+    {
+      name: 'palettes',
+      type: 'ColorPaletteSpec[]',
+      default: 'COLOR_PALETTES',
+      description: 'The palettes to render. Defaults to all ten Pantheon palettes in canvas order.',
+    },
+  ]}
+/>
+
+### Data exports
+
+Every palette is exported as both a named constant and as a member of the canonical `COLOR_PALETTES` array, so you can use the data directly in your own components (token tables, Storybook stories, theme builders, etc.).
+
+```ts
+import {
+  COLOR_PALETTES,
+  PRIMARY_PALETTE,
+  SECONDARY_PALETTE,
+  YELLOW_PALETTE,
+  AQUA_PALETTE,
+  GREEN_PALETTE,
+  BEIGE_PALETTE,
+  GRAY_PALETTE,
+  ERROR_PALETTE,
+  WARNING_PALETTE,
+  SUCCESS_PALETTE,
+  readableTextColor,
+} from '@petpooja/ui';
+```
+
+`readableTextColor(hex)` returns `"#000000"` or `"#ffffff"` — the same helper `ColorSwatch` uses internally for its label color.
+
+## Design tokens
+
+Specs from Figma node `66:689` (Pantheon › Colors).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Swatch size',
+      value: '500 × 80 px · 24 px padding',
+      figmaName: 'Frame N',
+      visual: (
+        <div className="flex h-7 w-12 items-center justify-between rounded-[6px] bg-[#1770ee] px-1.5 text-[8px] font-medium text-white">
+          <span>Aa</span>
+          <span className="font-mono">123</span>
+        </div>
+      ),
+    },
+    {
+      label: 'Corner radius',
+      value: '10 px',
+      figmaName: 'square/medium',
+      visual: <div className="h-7 w-7 rounded-[10px] border-2 border-foreground/30 bg-background" />,
+    },
+    {
+      label: 'Label font',
+      value: 'Inter Medium · 16/24',
+      figmaName: 'title-medium',
+      visual: <span className="text-[16px] font-medium leading-6">Aa</span>,
+    },
+    {
+      label: 'Hex font',
+      value: 'Inter Medium · uppercase · mono tracking',
+      visual: <span className="font-mono text-[14px] font-medium">FFFFFF</span>,
+    },
+    {
+      label: 'Foreground contrast',
+      value: 'Auto · WCAG luminance ≷ 0.5',
+      visual: (
+        <div className="flex items-center gap-1">
+          <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-[#1770ee] text-[10px] font-bold text-white">
+            A
+          </span>
+          <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-[#FFFBEA] text-[10px] font-bold text-black">
+            A
+          </span>
+        </div>
+      ),
+    },
+    {
+      label: 'Surface ring',
+      value: '1 px inset · rgba(0, 0, 0, 0.05)',
+      visual: <div className="h-7 w-7 rounded-[6px] bg-white ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Brand · Primary 500',
+      value: '#1770EE',
+      figmaName: 'buttons/primary',
+      visual: <div className="h-7 w-7 rounded-md bg-[#1770ee]" />,
+    },
+    {
+      label: 'Brand · Secondary 500',
+      value: '#C52031',
+      visual: <div className="h-7 w-7 rounded-md bg-[#C52031]" />,
+    },
+    {
+      label: 'Status · Error 500',
+      value: '#D92D20',
+      visual: <div className="h-7 w-7 rounded-md bg-[#D92D20]" />,
+    },
+    {
+      label: 'Status · Warning 500',
+      value: '#FBCC23',
+      visual: <div className="h-7 w-7 rounded-md bg-[#FBCC23]" />,
+    },
+    {
+      label: 'Status · Success 500',
+      value: '#039855',
+      visual: <div className="h-7 w-7 rounded-md bg-[#039855]" />,
+    },
+    {
+      label: 'Surface · Gray 0 / 1000',
+      value: '#FFFFFF · #000000',
+      visual: (
+        <div className="flex items-center gap-1">
+          <div className="h-7 w-7 rounded-md bg-white ring-1 ring-inset ring-black/10" />
+          <div className="h-7 w-7 rounded-md bg-black" />
+        </div>
+      ),
+    },
+  ]}
+/>

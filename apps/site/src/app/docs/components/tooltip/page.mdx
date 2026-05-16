@@ -1,0 +1,318 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  TooltipDefaultDemo,
+  TooltipMinimalDemo,
+  TooltipWithActionsDemo,
+  TooltipPlacementsDemo,
+  TooltipHoverDemo,
+} from '@/components/demos/tooltip-demo';
+
+# Tooltip
+
+Anchored info panel that surfaces a description, an optional title row (with a leading icon and × close affordance), and an inline action cluster. Twelve placements cover every Pantheon position — `top/bottom/left/right` × `start/center/end`.
+
+Pixel-perfect port of Figma node `2380:1293` (Pantheon › Tooltip). Built on **Radix Popover** (not Radix Tooltip) so the panel can hold interactive content — CTAs, the close button, links — with focus management, click-outside, ESC dismissal, and portaling for free.
+
+## Installation
+
+<InstallCommand name="tooltip" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { SimpleTooltip, Button } from '@petpooja/ui';
+
+export function Demo() {
+  return (
+    <SimpleTooltip
+      title="Title"
+      description="Supporting line text."
+      side="top"
+    >
+      <Button>Open tooltip</Button>
+    </SimpleTooltip>
+  );
+}
+```
+
+## Default — title + icon + description
+
+The default Pantheon variant — a leading icon on the left, the title text, a close affordance on the right, and a supporting paragraph below.
+
+<ComponentPreview
+  previewClassName="!min-h-[280px] !p-8"
+  preview={<TooltipDefaultDemo />}
+  code={`<SimpleTooltip
+  title="Title"
+  icon={<RavenIcon />}
+  description="Supporting line text lorem ipsum dolor sit amet…"
+  side="bottom"
+>
+  <Button variant="outline">Open tooltip</Button>
+</SimpleTooltip>`}
+/>
+
+## Minimal — description only
+
+Drop the title for a compact hint variant — the close affordance auto-hides when there is no title (override with `closable={true}`).
+
+<ComponentPreview
+  previewClassName="!min-h-[200px] !p-8"
+  preview={<TooltipMinimalDemo />}
+  code={`<SimpleTooltip
+  description="Supporting line text lorem ipsum dolor sit amet…"
+  side="bottom"
+>
+  <Button variant="outline">Hint</Button>
+</SimpleTooltip>`}
+/>
+
+## With actions — inline confirm pattern
+
+Pass `<TooltipAction>` children inside `<TooltipActions>` for an inline confirm/cancel cluster. Use `closeOnClick` to dismiss the panel automatically after the action fires.
+
+<ComponentPreview
+  previewClassName="!min-h-[280px] !p-8"
+  preview={<TooltipWithActionsDemo />}
+  code={`<Tooltip open={open} onOpenChange={setOpen}>
+  <TooltipTrigger asChild>
+    <Button variant="outline">Delete record</Button>
+  </TooltipTrigger>
+  <TooltipContent side="bottom">
+    <TooltipHeader>
+      <TooltipTitle>Delete record</TooltipTitle>
+      <TooltipClose />
+    </TooltipHeader>
+    <TooltipDescription>
+      This will permanently remove the record. You can't undo this action.
+    </TooltipDescription>
+    <TooltipActions>
+      <TooltipAction closeOnClick>Cancel</TooltipAction>
+      <TooltipAction variant="primary" closeOnClick onClick={onConfirm}>
+        Confirm
+      </TooltipAction>
+    </TooltipActions>
+    <TooltipArrow />
+  </TooltipContent>
+</Tooltip>`}
+/>
+
+## 12 placements
+
+Set `side` (`top` / `bottom` / `left` / `right`) and `align` (`start` / `center` / `end`) to anchor the panel anywhere relative to its trigger. The arrow auto-rotates and re-positions for each combination.
+
+<ComponentPreview
+  previewClassName="!min-h-[420px] !p-8"
+  preview={<TooltipPlacementsDemo />}
+  code={`<SimpleTooltip side="top"    align="start"  title="Top-left"      description="Anchored to this trigger." />
+<SimpleTooltip side="top"    align="center" title="Top-center"    description="Anchored to this trigger." />
+<SimpleTooltip side="top"    align="end"    title="Top-right"     description="Anchored to this trigger." />
+<SimpleTooltip side="right"  align="start"  title="Right-top"     description="Anchored to this trigger." />
+<SimpleTooltip side="right"  align="center" title="Right-center"  description="Anchored to this trigger." />
+<SimpleTooltip side="right"  align="end"    title="Right-bottom"  description="Anchored to this trigger." />
+<SimpleTooltip side="bottom" align="start"  title="Bottom-left"   description="Anchored to this trigger." />
+<SimpleTooltip side="bottom" align="center" title="Bottom-center" description="Anchored to this trigger." />
+<SimpleTooltip side="bottom" align="end"    title="Bottom-right"  description="Anchored to this trigger." />
+<SimpleTooltip side="left"   align="start"  title="Left-top"      description="Anchored to this trigger." />
+<SimpleTooltip side="left"   align="center" title="Left-center"   description="Anchored to this trigger." />
+<SimpleTooltip side="left"   align="end"    title="Left-bottom"   description="Anchored to this trigger." />`}
+/>
+
+## Hover behaviour
+
+Tooltip is built on Radix Popover (click-to-open) so it can hold interactive content. For the native hover/focus pattern, wire `open` to your own pointer-enter / leave handlers.
+
+<ComponentPreview
+  previewClassName="!min-h-[200px] !p-8"
+  preview={<TooltipHoverDemo />}
+  code={`const [open, setOpen] = useState(false);
+return (
+  <span
+    onMouseEnter={() => setOpen(true)}
+    onMouseLeave={() => setOpen(false)}
+    onFocus={() => setOpen(true)}
+    onBlur={() => setOpen(false)}
+  >
+    <Tooltip open={open} onOpenChange={setOpen}>
+      <TooltipTrigger asChild>
+        <Button variant="outline">Hover me</Button>
+      </TooltipTrigger>
+      <TooltipContent side="top">
+        <TooltipDescription>Hover tooltip — closes when the pointer leaves.</TooltipDescription>
+        <TooltipArrow />
+      </TooltipContent>
+    </Tooltip>
+  </span>
+);`}
+/>
+
+## API
+
+### `Tooltip`
+
+Re-export of `Popover.Root`. Owns the controlled / uncontrolled open state via `open` / `defaultOpen` / `onOpenChange`. Use it as the wrapping component when you need full control over the slots.
+
+### `TooltipTrigger`
+
+Re-export of `Popover.Trigger`. Pass `asChild` to inherit the trigger element your call-site already renders (e.g. a `<Button>`).
+
+### `TooltipContent`
+
+The floating panel. Renders via a portal, takes `side` / `align` / `sideOffset` from Radix, and applies the Pantheon chrome (`Surface/Tertiary` `#F0F0F0`, 12 px radius, 16 px padding, 296 px max-width, subtle elevation).
+
+<PropsTable
+  rows={[
+    { name: 'side', type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: 'Preferred side of the trigger to render against. Radix auto-flips when there is not enough room.' },
+    { name: 'align', type: '"start" | "center" | "end"', default: '"center"', description: 'Alignment along the side.' },
+    { name: 'sideOffset', type: 'number', default: '8', description: 'Pixel gap between the trigger and the panel.' },
+    { name: 'fluid', type: 'boolean', description: 'Drop the default 296 px width — useful for full-width or narrow tooltips.' },
+  ]}
+/>
+
+### `TooltipHeader` · `TooltipTitle` · `TooltipIcon` · `TooltipClose`
+
+The top row primitives. `TooltipHeader` spreads its children with `justify-between` so the close button hugs the right edge. `TooltipClose` is the Radix `Popover.Close` styled as a 16×16 button — clicking it dismisses the panel without extra wiring.
+
+### `TooltipDescription`
+
+The supporting paragraph — Inter Regular 14/22 #000 with an 8 px gap from the header above.
+
+### `TooltipActions` · `TooltipAction`
+
+`TooltipActions` is a right-aligned, gap-2 wrapper. `TooltipAction` is the text-button variant — pass `variant="primary"` for the confirm-style emphasis or `closeOnClick` to dismiss the panel as the click fires.
+
+<PropsTable
+  rows={[
+    { name: 'variant', type: '"secondary" | "primary"', default: '"secondary"', description: '`secondary` is Inter Medium; `primary` bumps to SemiBold so the confirm action reads stronger.' },
+    { name: 'closeOnClick', type: 'boolean', description: 'Render the button as the Radix close affordance — dismisses the tooltip when activated.' },
+  ]}
+/>
+
+### `TooltipArrow`
+
+12 × 6 px triangle in the same `#F0F0F0` fill. Radix auto-rotates it for every `side`. Place inside `<TooltipContent>` as the last child.
+
+### `SimpleTooltip`
+
+Prop-driven wrapper for the common "trigger + title + description + (optional) actions" pattern.
+
+<PropsTable
+  rows={[
+    { name: 'children', type: 'ReactElement', description: 'The trigger element — rendered as the Radix Trigger with `asChild`.' },
+    { name: 'title', type: 'ReactNode', description: 'Renders inside `TooltipHeader` with the icon + close affordance.' },
+    { name: 'description', type: 'ReactNode', description: 'The supporting paragraph.' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional leading icon next to the title.' },
+    { name: 'closable', type: 'boolean', description: 'Show the × close button. Defaults to `true` when a `title` is set.' },
+    { name: 'actions', type: 'ReactNode', description: 'Right-aligned action cluster (typically one or two `<TooltipAction>`).' },
+    { name: 'side', type: '"top" | "right" | "bottom" | "left"', default: '"top"', description: 'Anchored side. Forwarded to the underlying `TooltipContent`.' },
+    { name: 'align', type: '"start" | "center" | "end"', default: '"center"', description: 'Alignment along the side.' },
+    { name: 'sideOffset', type: 'number', description: 'Pixel gap between trigger and panel.' },
+    { name: 'hideArrow', type: 'boolean', description: 'Drop the pointing arrow.' },
+    { name: 'open', type: 'boolean', description: 'Controlled open state. Pair with `onOpenChange`.' },
+    { name: 'defaultOpen', type: 'boolean', description: 'Uncontrolled default open state.' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Fires when the open state changes (click-outside, ESC, close button, manual control).' },
+  ]}
+/>
+
+## Design tokens
+
+Specs from Figma node `2380:1293` (Pantheon › Tooltip).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Surface',
+      value: '`#F0F0F0`',
+      figmaName: 'Surface/Tertiary',
+      visual: <div className="h-7 w-12 rounded-md bg-[#F0F0F0] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Radius',
+      value: '12 px',
+      figmaName: 'square/large',
+      visual: <div className="h-7 w-12 rounded-[12px] bg-[#F0F0F0] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Padding',
+      value: '16 px',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Width',
+      value: '296 px (default · overrideable via className / fluid)',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Title',
+      value: 'Inter Medium · 16 / 24 · `#000`',
+      figmaName: 'Pantheon/Title/Medium-Medium',
+      visual: <span className="text-[16px] font-medium leading-[24px] text-black">Title</span>,
+    },
+    {
+      label: 'Description',
+      value: 'Inter Regular · 14 / 22 · `#000`',
+      figmaName: 'Pantheon/Body/Medium-Regular',
+      visual: <span className="text-[14px] leading-[22px] text-black">Body</span>,
+    },
+    {
+      label: 'Close icon',
+      value: '16 × 16 · `#000`',
+      visual: (
+        <span className="inline-flex h-4 w-4 items-center justify-center text-black">
+          <svg viewBox="0 0 16 16" fill="none" className="h-full w-full" aria-hidden="true">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      ),
+    },
+    {
+      label: 'Leading icon',
+      value: '20 × 20 · `#000` (uses `currentColor`)',
+      visual: (
+        <span className="inline-flex h-5 w-5 items-center justify-center text-black">
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-full w-full" aria-hidden="true">
+            <circle cx="10" cy="10" r="3" />
+          </svg>
+        </span>
+      ),
+    },
+    {
+      label: 'Action button',
+      value: 'Inter Medium · 14 / 22 · `#1770EE`',
+      figmaName: 'Buttons/Text',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-[#1770EE]">CTA</span>,
+    },
+    {
+      label: 'Arrow',
+      value: '12 × 6 px · same Surface/Tertiary fill',
+      visual: (
+        <svg viewBox="0 0 12 6" fill="none" className="h-3 w-6">
+          <path d="M0 0 L6 6 L12 0 Z" fill="#F0F0F0" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Gap · title → description',
+      value: '8 px',
+      visual: <div className="h-2 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Gap · description → actions',
+      value: '16 px',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Elevation',
+      value: '`0 2px 8px 0 rgba(0,0,0,0.12)`',
+      visual: <div className="h-7 w-12 rounded-md bg-[#F0F0F0] shadow-[0_2px_8px_0_rgba(0,0,0,0.12)]" />,
+    },
+  ]}
+/>

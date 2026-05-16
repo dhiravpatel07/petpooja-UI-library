@@ -93,6 +93,26 @@ const REGISTRY_ITEMS = [
     registryDependencies: ['utils'],
   },
   {
+    name: 'chip',
+    type: 'registry:ui',
+    title: 'Chip',
+    description:
+      'Compact selectable label with four sizes (xs / sm / md / lg), two shapes (Square / Round), three states (Active / Pressed / Selected), and optional leading & trailing icons. Pressed maps to the native :active state; Selected is a controlled prop. Pixel-perfect port of Figma node 57:165 (Pantheon › Chips).',
+    files: [{ source: 'ui/chip.tsx', target: 'components/ui/chip.tsx', type: 'registry:ui' }],
+    dependencies: ['class-variance-authority'],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'color',
+    type: 'registry:ui',
+    title: 'Color',
+    description:
+      'The full Pantheon color system as drop-in React primitives. Ten palettes (Primary, Secondary, Yellow, Aqua, Green, Beige, Gray, Error, Warning, Success) wrapped in three composable parts: ColorSwatch for one shade, ColorPalette for a column, and ColorSystem for the whole page. Every shade is the verbatim hex from Figma; labels auto-contrast via WCAG luminance. Pixel-perfect port of Figma node 66:689 (Pantheon › Colors).',
+    files: [{ source: 'ui/color.tsx', target: 'components/ui/color.tsx', type: 'registry:ui' }],
+    dependencies: [],
+    registryDependencies: ['utils'],
+  },
+  {
     name: 'date-picker',
     type: 'registry:ui',
     title: 'Date Picker',
@@ -109,6 +129,28 @@ const REGISTRY_ITEMS = [
     registryDependencies: ['utils', 'calendar'],
   },
   {
+    name: 'dropdown',
+    type: 'registry:ui',
+    title: 'Dropdown',
+    description:
+      'Composable dropdown menu with optional search row, selectable items (Default / Hover / Selected), checkbox items, and an optional CTA footer (Secondary / Primary). Built on Radix Popover for anchored positioning, ESC dismissal, click-outside, and focus return. Pixel-perfect port of Figma node 2768:141 (Pantheon › Dropdown).',
+    files: [
+      { source: 'ui/dropdown.tsx', target: 'components/ui/dropdown.tsx', type: 'registry:ui' },
+    ],
+    dependencies: ['@radix-ui/react-popover'],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'list',
+    type: 'registry:ui',
+    title: 'List',
+    description:
+      'Slot-based list row primitive. Leading slot accepts icon / avatar / checkbox / radio / switch; trailing slot accepts icon or control. Text supports 1 / 2 / 3 lines (Label · Title · Description) with auto items-start alignment for 3-line + image layouts. Optional interactive mode, divided variant, and a 56×56 ListAvatar helper. Pixel-perfect port of Figma node 3461:3 (Pantheon › List).',
+    files: [{ source: 'ui/list.tsx', target: 'components/ui/list.tsx', type: 'registry:ui' }],
+    dependencies: [],
+    registryDependencies: ['utils'],
+  },
+  {
     name: 'popup',
     type: 'registry:ui',
     title: 'Popup',
@@ -116,6 +158,18 @@ const REGISTRY_ITEMS = [
       'Centered modal dialog with Default (header + body + footer) and Image (media + body + footer) variants. Built on Radix Dialog for ARIA, focus trap, ESC key, and scroll lock. Composable Header / Body / Footer / Media slots. Pixel-perfect port of Figma node 66:688 (Pantheon › Pop Up).',
     files: [
       { source: 'ui/popup.tsx', target: 'components/ui/popup.tsx', type: 'registry:ui' },
+    ],
+    dependencies: ['@radix-ui/react-dialog'],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'side-drawer',
+    type: 'registry:ui',
+    title: 'Side Drawer',
+    description:
+      'Edge-anchored modal that slides in from the right (or left) of the viewport. Composable Header + Body + Footer slots cover three Figma states: Default (header + scrolling sections + CTA footer), Zero State (centered media + title + description + CTA footer), and Custom (free-form body). Built on Radix Dialog for focus trap, ESC, click-outside, and scroll lock. Pixel-perfect port of Figma node 2400:18 (Pantheon › Side Drawer).',
+    files: [
+      { source: 'ui/side-drawer.tsx', target: 'components/ui/side-drawer.tsx', type: 'registry:ui' },
     ],
     dependencies: ['@radix-ui/react-dialog'],
     registryDependencies: ['utils'],
@@ -158,6 +212,54 @@ const REGISTRY_ITEMS = [
       { source: 'ui/switch.tsx', target: 'components/ui/switch.tsx', type: 'registry:ui' },
     ],
     dependencies: ['@radix-ui/react-switch'],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'table',
+    type: 'registry:ui',
+    title: 'Table',
+    description:
+      'Composable data-table primitives — Table, TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, plus higher-level pieces (TableToolbar with selection slots, TablePagination with rows-per-page picker, TableStatus pill, TableLink, and TableExpandToggle). Supports sortable headers, selected rows with brand rail, expandable rows, sub-rows, and numeric columns. Pixel-perfect port of Figma node 2436:798 (Pantheon › Data Table).',
+    files: [
+      { source: 'ui/table.tsx', target: 'components/ui/table.tsx', type: 'registry:ui' },
+    ],
+    dependencies: [],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'tooltip',
+    type: 'registry:ui',
+    title: 'Tooltip',
+    description:
+      'Anchored info panel with 12 placements (top/bottom/left/right × start/center/end), optional title row with leading icon and close affordance, supporting text, and inline action buttons. Built on Radix Popover so the panel can hold interactive content — focus management, click-outside, ESC, and portaling come for free. Includes both composable primitives and a prop-driven SimpleTooltip wrapper. Pixel-perfect port of Figma node 2380:1293 (Pantheon › Tooltip).',
+    files: [
+      { source: 'ui/tooltip.tsx', target: 'components/ui/tooltip.tsx', type: 'registry:ui' },
+    ],
+    dependencies: ['@radix-ui/react-popover'],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'text',
+    type: 'registry:ui',
+    title: 'Text',
+    description:
+      'Polymorphic typography primitive that ports the full Pantheon ramp — Display / Title / Body / Label × Large / Medium / Small × Regular / Medium / SemiBold / Bold (48 styles). Ships with semantic color tokens, alignment, italic / underline / strikethrough decorations, single-line truncation, multi-line clamp, and an `as` prop for the rendered element. Convenience aliases (Display / Title / Body / Label) lock the variant for cleaner call-sites. Pixel-perfect port of Figma node 66:686 (Pantheon › Typography).',
+    files: [
+      { source: 'ui/text.tsx', target: 'components/ui/text.tsx', type: 'registry:ui' },
+    ],
+    dependencies: [],
+    registryDependencies: ['utils'],
+  },
+  {
+    name: 'text-input',
+    type: 'registry:ui',
+    title: 'Text Input',
+    description:
+      'Notched-outline text input with floating label, three sizes (sm / md / lg), five states (Default / Active / Input / Error / Disabled), prefix and suffix slots, leading and trailing icons, an inline primary CTA, and supporting helper / error text. Trailing icon can be made clickable for clear / reveal patterns. Pixel-perfect port of Figma node 66:685 (Pantheon › Text Input).',
+    files: [
+      { source: 'ui/text-input.tsx', target: 'components/ui/text-input.tsx', type: 'registry:ui' },
+    ],
+    dependencies: [],
     registryDependencies: ['utils'],
   },
   {

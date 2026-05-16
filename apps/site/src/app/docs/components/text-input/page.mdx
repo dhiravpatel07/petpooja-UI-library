@@ -1,0 +1,365 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  TextInputDefaultDemo,
+  TextInputSizesDemo,
+  TextInputStatesDemo,
+  TextInputIconsDemo,
+  TextInputPrefixDemo,
+  TextInputSuffixDemo,
+  TextInputCtaDemo,
+  TextInputPasswordDemo,
+  TextInputSearchDemo,
+} from '@/components/demos/text-input-demo';
+
+# Text Input
+
+Notched-outline text field with a floating label. One component covers every Pantheon variant — three sizes, five states, prefix / suffix slots, leading + trailing icons, an inline primary CTA, and supporting helper / error text.
+
+Pixel-perfect port of Figma node `66:685` (Pantheon › Text Input). The "notch" is rendered without a `<fieldset>`/`<legend>` so you can hand a real `<input>` to consumers — the cutout effect comes from a `bg-white` slice on the floated label that overlays the border line.
+
+## Installation
+
+<InstallCommand name="text-input" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Usage
+
+```tsx
+import { TextInput } from '@petpooja/ui';
+
+export function Demo() {
+  const [email, setEmail] = useState('');
+  return (
+    <TextInput
+      label="Email"
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      helperText="We'll send a verification link."
+    />
+  );
+}
+```
+
+## Default
+
+The label sits centered as a placeholder when the field is empty and unfocused. Focus or a value floats it into the notch at top-left.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputDefaultDemo />}
+  code={`<TextInput label="Label" />`}
+/>
+
+## Sizes
+
+Three heights — `sm` (36 px), `md` (40 px, default), and `lg` (48 px) — match the Pantheon `square/small` and `square/medium` tokens.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputSizesDemo />}
+  code={`<TextInput size="sm" label="Small" />
+<TextInput size="md" label="Medium" />
+<TextInput size="lg" label="Large" />`}
+/>
+
+## States
+
+Five states cover the full Figma spec. Default is empty + unfocused; Active is what focus looks like; Input is "has value, not focused"; Error toggles the red treatment plus an inline message; Disabled paints the `#F5F5F5` wash.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputStatesDemo />}
+  code={`<TextInput label="Default" />
+<TextInput label="Input" defaultValue="ravi@petpooja.com" />
+<TextInput
+  label="Error"
+  defaultValue="invalid-email"
+  error="Please enter a valid email."
+/>
+<TextInput label="Disabled" defaultValue="Locked field" disabled />`}
+/>
+
+## Leading + trailing icons
+
+Pass any 18 / 20 px SVG into `leadingIcon` / `trailingIcon`. Add `onTrailingIconClick` to make the trailing slot a clear button (or a password reveal, a refresh, etc.).
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputIconsDemo />}
+  code={`<TextInput
+  label="Email"
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+  leadingIcon={<MailIcon />}
+  trailingIcon={<CloseIcon />}
+  onTrailingIconClick={() => setValue('')}
+  helperText="We'll send a verification link."
+/>`}
+/>
+
+## Prefix slot
+
+The prefix slot is a left-attached chunk separated from the input by a 1 px divider — perfect for country codes, currency selectors, or any dropdown trigger.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputPrefixDemo />}
+  code={`<TextInput
+  label="Phone"
+  placeholder="98765 43210"
+  type="tel"
+  prefix={
+    <button type="button" className="inline-flex items-center gap-1">
+      <span>🇮🇳</span>
+      <span>+91</span>
+      <ChevronDown />
+    </button>
+  }
+/>`}
+/>
+
+## Suffix slot
+
+Same idea on the right — 1 px divider, then any content. Use for unit indicators, currency symbols, or right-attached pickers.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputSuffixDemo />}
+  code={`<TextInput
+  label="Order value"
+  type="number"
+  defaultValue="1250"
+  suffix={<span className="text-[14px] text-[#666]">INR</span>}
+/>`}
+/>
+
+## Inline CTA
+
+`cta` renders an attached primary button on the right edge — fuses to the field's outer border, takes the Pantheon `buttons/primary` treatment. Disable it independently of the input via `ctaDisabled`.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputCtaDemo />}
+  code={`<TextInput
+  label="Promo code"
+  value={code}
+  onChange={(e) => setCode(e.target.value)}
+  cta="Apply"
+  ctaDisabled={code.trim().length === 0}
+  onCtaClick={() => apply(code)}
+  helperText="Enter a promo code to see the discount."
+/>`}
+/>
+
+## Password reveal
+
+`onTrailingIconClick` makes the trailing slot interactive — swap the icon between open and closed eye states and toggle the input `type`.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputPasswordDemo />}
+  code={`const [show, setShow] = useState(false);
+return (
+  <TextInput
+    label="Password"
+    type={show ? 'text' : 'password'}
+    value={value}
+    onChange={(e) => setValue(e.target.value)}
+    trailingIcon={<EyeIcon open={show} />}
+    onTrailingIconClick={() => setShow((s) => !s)}
+    helperText="At least 8 characters."
+  />
+);`}
+/>
+
+## Search — no label
+
+Skip `label` to use the field as a plain placeholder-only input. The trailing-icon clear pattern works without a label too.
+
+<ComponentPreview
+  previewClassName="!p-8"
+  preview={<TextInputSearchDemo />}
+  code={`<TextInput
+  placeholder="Search outlets"
+  value={q}
+  onChange={(e) => setQ(e.target.value)}
+  leadingIcon={<SearchIcon />}
+  trailingIcon={q ? <CloseIcon /> : null}
+  onTrailingIconClick={q ? () => setQ('') : undefined}
+/>`}
+/>
+
+## API
+
+### `TextInput`
+
+Extends every native `<input>` attribute (apart from `size`, which is repurposed here).
+
+<PropsTable
+  rows={[
+    {
+      name: 'size',
+      type: '"sm" | "md" | "lg"',
+      default: '"md"',
+      description: 'Pantheon field height — 36 / 40 / 48 px.',
+    },
+    {
+      name: 'label',
+      type: 'ReactNode',
+      description: 'Floating label. Renders the notched-outline animation when set.',
+    },
+    {
+      name: 'helperText',
+      type: 'ReactNode',
+      description: 'Supporting text rendered below the field. Replaced by `error` when present.',
+    },
+    {
+      name: 'error',
+      type: 'boolean | string',
+      description: 'Toggle the red error treatment. Passing a string also uses it as the supporting message.',
+    },
+    {
+      name: 'leadingIcon',
+      type: 'ReactNode',
+      description: 'Icon rendered inside the left padding (between any `prefix` and the input).',
+    },
+    {
+      name: 'trailingIcon',
+      type: 'ReactNode',
+      description: 'Icon rendered inside the right padding. Combine with `onTrailingIconClick` to make it a clear / reveal affordance.',
+    },
+    {
+      name: 'onTrailingIconClick',
+      type: '(e: MouseEvent) => void',
+      description: 'When set, the trailing icon renders as a `<button>` with hover wash + focus ring.',
+    },
+    {
+      name: 'prefix',
+      type: 'ReactNode',
+      description: 'Left-attached slot (e.g. a country / currency dropdown). Renders with a 1 px right divider. Forces the label to float.',
+    },
+    {
+      name: 'suffix',
+      type: 'ReactNode',
+      description: 'Right-attached slot (e.g. a unit indicator). Renders with a 1 px left divider.',
+    },
+    {
+      name: 'cta',
+      type: 'ReactNode',
+      description: 'Attached primary button on the right edge — fuses to the field with no right border-radius.',
+    },
+    {
+      name: 'onCtaClick',
+      type: '(e: MouseEvent) => void',
+      description: 'Fires when the inline CTA is activated.',
+    },
+    {
+      name: 'ctaDisabled',
+      type: 'boolean',
+      description: 'Disable the CTA independently of the input (e.g. when the value is empty).',
+    },
+    {
+      name: 'containerClassName',
+      type: 'string',
+      description: 'Override the outermost `<div>` class — useful for sizing the field inside a constrained layout.',
+    },
+  ]}
+/>
+
+### `TextInputIcon`
+
+20 × 20 inline-flex helper for callers that need to drop a consistent icon into a `prefix` or `suffix` slot. Inherits `text-black` so any SVG using `currentColor` picks up the right fill.
+
+## Design tokens
+
+Specs from Figma node `66:685` (Pantheon › Text Input).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Heights',
+      value: '36 px (sm) · 40 px (md) · 48 px (lg)',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Radius',
+      value: '8 px (sm) · 10 px (md/lg)',
+      figmaName: 'square/small · square/medium',
+      visual: <div className="h-7 w-12 rounded-[10px] border border-[#E5E5E5]" />,
+    },
+    {
+      label: 'Border · rest',
+      value: '1 px solid `#E5E5E5`',
+      figmaName: 'Border/Primary',
+      visual: <div className="h-7 w-12 rounded-md border border-[#E5E5E5]" />,
+    },
+    {
+      label: 'Border · active',
+      value: '1 px + 1 px ring · `#1770EE`',
+      figmaName: 'Border/Brand',
+      visual: <div className="h-7 w-12 rounded-md border border-[#1770EE] ring-1 ring-[#1770EE]" />,
+    },
+    {
+      label: 'Border · error',
+      value: '1 px + 1 px ring · `#D03A3A`',
+      figmaName: 'Border/Error',
+      visual: <div className="h-7 w-12 rounded-md border border-[#D03A3A] ring-1 ring-[#D03A3A]" />,
+    },
+    {
+      label: 'Surface · disabled',
+      value: '`#F5F5F5`',
+      figmaName: 'Surface/Disabled',
+      visual: <div className="h-7 w-12 rounded-md bg-[#F5F5F5] ring-1 ring-inset ring-black/5" />,
+    },
+    {
+      label: 'Body text',
+      value: 'Inter Regular · 14 / 22 (sm/md) · 16 / 24 (lg) · `#000`',
+      figmaName: 'Body/Medium-Regular',
+      visual: <span className="text-[14px] leading-[22px] text-black">Text</span>,
+    },
+    {
+      label: 'Label (resting)',
+      value: 'Inter Regular · 14 / 22 · `#666`',
+      figmaName: 'Text/Secondary',
+      visual: <span className="text-[14px] leading-[22px] text-[#666]">Label</span>,
+    },
+    {
+      label: 'Label (floated)',
+      value: 'Inter Medium · 12 / 16 · `#666` / `#1770EE` / `#D03A3A`',
+      figmaName: 'Label/Small-Medium',
+      visual: <span className="text-[12px] font-medium leading-[16px] text-[#1770EE]">Label</span>,
+    },
+    {
+      label: 'Placeholder',
+      value: 'Inter Regular · 14 / 22 · `#999`',
+      figmaName: 'Text/Placeholder',
+      visual: <span className="text-[14px] leading-[22px] text-[#999]">Placeholder</span>,
+    },
+    {
+      label: 'Supporting text',
+      value: 'Inter Regular · 12 / 20 · `#666` / `#D03A3A`',
+      figmaName: 'Caption/Regular',
+      visual: <span className="text-[12px] leading-[20px] text-[#666]">Supporting text</span>,
+    },
+    {
+      label: 'Divider',
+      value: '1 px solid `#E5E5E5`',
+      figmaName: 'Border/Primary',
+      visual: <div className="h-7 w-px bg-[#E5E5E5]" />,
+    },
+    {
+      label: 'CTA',
+      value: 'bg `#1770EE` · pressed `#125ABE` · text `#FFF`',
+      figmaName: 'Buttons/Primary',
+      visual: <span className="inline-flex h-6 items-center rounded-[6px] bg-[#1770EE] px-2 text-[12px] font-medium text-white">CTA</span>,
+    },
+  ]}
+/>

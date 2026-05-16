@@ -1,0 +1,294 @@
+import { ComponentPreview } from '@/components/component-preview';
+import { PropsTable } from '@/components/props-table';
+import { DesignTokens } from '@/components/design-tokens';
+import {
+  SideDrawerDefaultDemo,
+  SideDrawerZeroStateDemo,
+  SideDrawerCustomDemo,
+} from '@/components/demos/side-drawer-demo';
+
+# Side Drawer
+
+Edge-anchored modal that slides in from the right (or left) of the viewport and fills the full height. Three documented Figma states map to composition rather than props:
+
+- **Default** — header + scrolling body with sections + CTA footer
+- **Zero State** — header + centered media + centered title/description + CTA footer
+- **Custom** — header + an arbitrary body slot (no built-in spacing)
+
+Built on **Radix Dialog** so focus trap, ESC dismissal, click-outside, scroll lock, and ARIA roles come for free. Pixel-perfect port of Figma node `2400:18` (Pantheon › Side Drawer).
+
+## Installation
+
+<InstallCommand name="side-drawer" />
+
+Or via npm:
+
+```bash
+pnpm add @petpooja/ui
+```
+
+## Anatomy
+
+```tsx
+<SideDrawer>
+  <SideDrawerTrigger />
+  <SideDrawerContent side="right">
+    <SideDrawerHeader>
+      <SideDrawerTitleGroup>
+        <SideDrawerLeadingIcon />
+        <SideDrawerTitleStack>
+          <SideDrawerTitle />
+          <SideDrawerSubtitle />
+        </SideDrawerTitleStack>
+      </SideDrawerTitleGroup>
+      <SideDrawerCloseIcon />
+    </SideDrawerHeader>
+
+    <SideDrawerBody divided>
+      <SideDrawerSection>
+        <SideDrawerSectionTitle />
+        <SideDrawerText />
+      </SideDrawerSection>
+      <SideDrawerSeparator />
+      {/* …more sections */}
+    </SideDrawerBody>
+
+    <SideDrawerFooter>
+      <SideDrawerCancelButton />
+      <SideDrawerConfirmButton />
+    </SideDrawerFooter>
+  </SideDrawerContent>
+</SideDrawer>
+```
+
+## Default
+
+The most common composition — three scrolling sections separated by `#D9D9D9` hairlines, with a sticky header, a back-arrow leading icon, an inline `Action CTA` chip, and the two-button footer.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[200px]"
+  preview={<SideDrawerDefaultDemo />}
+  code={`<SideDrawer>
+  <SideDrawerTrigger>Open</SideDrawerTrigger>
+  <SideDrawerContent>
+    <SideDrawerHeader>
+      <SideDrawerTitleGroup>
+        <BackButton />
+        <SideDrawerTitleStack>
+          <SideDrawerTitle>Title</SideDrawerTitle>
+          <SideDrawerSubtitle>Subtitle</SideDrawerSubtitle>
+        </SideDrawerTitleStack>
+      </SideDrawerTitleGroup>
+      <SideDrawerCloseIcon />
+    </SideDrawerHeader>
+    <SideDrawerBody divided>
+      <SideDrawerSection>
+        <SideDrawerSectionTitle>Content Title</SideDrawerSectionTitle>
+        <SideDrawerText>Content Subtitle</SideDrawerText>
+      </SideDrawerSection>
+      <SideDrawerSeparator />
+      {/* …more sections */}
+    </SideDrawerBody>
+    <SideDrawerFooter>
+      <SideDrawerClose asChild>
+        <SideDrawerCancelButton>Secondary</SideDrawerCancelButton>
+      </SideDrawerClose>
+      <SideDrawerConfirmButton>Primary Action</SideDrawerConfirmButton>
+    </SideDrawerFooter>
+  </SideDrawerContent>
+</SideDrawer>`}
+/>
+
+## Zero State
+
+When there's no data yet — render the centered media + title + description block inside the body.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[200px]"
+  preview={<SideDrawerZeroStateDemo />}
+  code={`<SideDrawerBody>
+  <SideDrawerZeroState>
+    <SideDrawerMedia>
+      <PlaceholderArt />
+    </SideDrawerMedia>
+    <div className="flex w-full flex-col items-center gap-2 px-6">
+      <SideDrawerZeroStateTitle>Content Title</SideDrawerZeroStateTitle>
+      <SideDrawerZeroStateDescription>
+        Lorem ipsum dolor sit amet…
+      </SideDrawerZeroStateDescription>
+    </div>
+  </SideDrawerZeroState>
+</SideDrawerBody>`}
+/>
+
+## Custom body
+
+`SideDrawerBody` is a plain flex column with `overflow-y-auto` — opt out of every default by skipping `divided` and dropping any layout inside.
+
+<ComponentPreview
+  previewClassName="!p-10 min-h-[200px]"
+  preview={<SideDrawerCustomDemo />}
+  code={`<SideDrawerBody className="p-6">
+  {/* any custom layout */}
+</SideDrawerBody>`}
+/>
+
+## API
+
+### `SideDrawer`
+
+Root. Re-export of `Radix Dialog.Root`. Accepts every standard Dialog prop.
+
+<PropsTable
+  rows={[
+    { name: 'open', type: 'boolean', description: 'Controlled open state.' },
+    { name: 'defaultOpen', type: 'boolean', description: 'Initial open state when uncontrolled.' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Fires whenever the drawer opens or closes.' },
+    { name: 'modal', type: 'boolean', default: 'true', description: 'When true (the default) traps focus and blocks outside interactions.' },
+  ]}
+/>
+
+### `SideDrawerContent`
+
+The 550&nbsp;px panel. Renders into a portal, anchored to the chosen viewport edge.
+
+<PropsTable
+  rows={[
+    {
+      name: 'side',
+      type: '"right" | "left"',
+      default: '"right"',
+      description: 'Which edge the drawer anchors and slides in from. Corner radius and slide direction flip with the side.',
+    },
+    {
+      name: 'hideOverlay',
+      type: 'boolean',
+      description: 'Skip the dim overlay. Useful when the drawer should not block interactions with the host page.',
+    },
+  ]}
+/>
+
+### `SideDrawerHeader` · `SideDrawerTitleGroup` · `SideDrawerTitleStack` · `SideDrawerTitle` · `SideDrawerSubtitle` · `SideDrawerLeadingIcon` · `SideDrawerCloseIcon`
+
+Header subparts. `SideDrawerLeadingIcon` defaults to the Pantheon back-arrow; pass children to override. `SideDrawerCloseIcon` is the 40×40 outline button in the top-right that auto-dismisses the drawer via `Radix Dialog.Close`.
+
+### `SideDrawerBody`
+
+The flex-1, scrolling body. Add `divided` to apply a 24&nbsp;px gap between top-level children (typically `<SideDrawerSection>` blocks).
+
+### `SideDrawerSection` · `SideDrawerSectionTitle` · `SideDrawerText` · `SideDrawerSeparator`
+
+Optional section helpers. `<SideDrawerSection>` applies 24&nbsp;px horizontal padding and a 16&nbsp;px vertical gap between children; `<SideDrawerSeparator>` is the full-width `#D9D9D9` hairline; the text helpers apply the Pantheon Body Large + Body Medium type tokens.
+
+### `SideDrawerFooter` · `SideDrawerCancelButton` · `SideDrawerConfirmButton`
+
+Footer + preset buttons. The footer reserves a 1&nbsp;px top border, 16&nbsp;px padding, and a 16&nbsp;px gap; buttons are 48&nbsp;px tall, 12&nbsp;px radius, `flex-1` with `max-w-200` so they don't overstretch on wide drawers. Wrap the cancel button in `<SideDrawerClose asChild>` to auto-dismiss on click.
+
+### `SideDrawerActionCta`
+
+Small 32&nbsp;px outline chip used inside section headers (e.g. an "Edit" affordance next to a content title). 8&nbsp;px radius, Title Small typography.
+
+### `SideDrawerMedia` · `SideDrawerZeroState` · `SideDrawerZeroStateTitle` · `SideDrawerZeroStateDescription`
+
+Zero-state helpers. `SideDrawerMedia` is a 250&nbsp;px tall `#F0F0F0` placeholder block (override the height with the `height` prop); `SideDrawerZeroState` is the centered media + text wrapper.
+
+## Keyboard
+
+| Key            | Behavior                                       |
+| -------------- | ---------------------------------------------- |
+| <kbd>Esc</kbd> | Close the drawer and return focus to the trigger. |
+| <kbd>Tab</kbd> | Cycle focus inside the panel (focus trap).     |
+
+## Design tokens
+
+Specs from Figma node `2400:18` (Pantheon › Side Drawer).
+
+<DesignTokens
+  rows={[
+    {
+      label: 'Panel size',
+      value: '550 px wide · full height · 10 px inner-edge radius',
+      figmaName: 'Side Drawer',
+      visual: (
+        <div className="h-7 w-12 rounded-l-md bg-white shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] ring-1 ring-inset ring-black/5" />
+      ),
+    },
+    {
+      label: 'Overlay',
+      value: 'rgba(0,0,0,0.4) · fades in/out',
+      visual: <div className="h-7 w-7 rounded-md bg-black/40" />,
+    },
+    {
+      label: 'Header',
+      value: '24 px padding · sticky top',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+    {
+      label: 'Title',
+      value: 'Inter SemiBold · 20 / 28 · Text/Primary #000',
+      figmaName: 'Pantheon/Display/Small-SemiBold',
+      visual: <span className="text-[20px] font-semibold leading-[28px] text-black">Title</span>,
+    },
+    {
+      label: 'Subtitle',
+      value: 'Inter Medium · 14 / 22 · Text/Secondary #666',
+      figmaName: 'Pantheon/Body/Medium-Medium',
+      visual: <span className="text-[14px] font-medium leading-[22px] text-[#666]">Subtitle</span>,
+    },
+    {
+      label: 'Close-icon button',
+      value: '40 × 40 · #FFFFFF · 1 px #E5E5E5 · 10 px radius',
+      figmaName: 'Outline Icon Button',
+      visual: (
+        <div className="flex size-7 items-center justify-center rounded-md border border-[#E5E5E5] bg-white">
+          <svg viewBox="0 0 20 20" fill="none" className="size-3.5">
+            <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </div>
+      ),
+    },
+    {
+      label: 'Section divider',
+      value: '1 px · #D9D9D9 · full width',
+      visual: <div className="h-px w-12 bg-[#D9D9D9]" />,
+    },
+    {
+      label: 'Footer top border',
+      value: '1 px · #E5E5E5',
+      visual: <div className="h-px w-12 bg-[#E5E5E5]" />,
+    },
+    {
+      label: 'Primary button',
+      value: '48 px · #1770EE · white text · 12 px radius',
+      figmaName: 'Buttons/Primary',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-md bg-[#1770EE] px-2.5 text-[12px] font-medium text-white">
+          Primary
+        </span>
+      ),
+    },
+    {
+      label: 'Secondary button',
+      value: '48 px · white · 1 px #E5E5E5 · 12 px radius',
+      visual: (
+        <span className="inline-flex h-7 items-center rounded-md border border-[#E5E5E5] bg-white px-2.5 text-[12px] font-medium text-black">
+          Secondary
+        </span>
+      ),
+    },
+    {
+      label: 'Action CTA chip',
+      value: '32 px · white · 8 px radius · Title Small label',
+      visual: (
+        <span className="inline-flex h-6 items-center rounded-md border border-[#E5E5E5] bg-white px-2 text-[11px] font-medium text-black">
+          Action CTA
+        </span>
+      ),
+    },
+    {
+      label: 'Slide animation',
+      value: '280 ms in · 220 ms out · cubic-bezier(0.32, 0.72, 0, 1)',
+      visual: <div className="h-3 w-12 rounded-md bg-foreground/20" />,
+    },
+  ]}
+/>
